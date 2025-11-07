@@ -126,3 +126,4 @@ class DynamicEnumMeta(EnumMeta):
         setattr(cls, name, new_member)
         cls._member_map_[name] = new_member  # type: ignore[assignment]
         cls._value2member_map_[value] = new_member  # type: ignore[assignment]
+        return None

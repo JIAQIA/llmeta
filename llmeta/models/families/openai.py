@@ -9,7 +9,7 @@ OpenAI 模型家族配置 / OpenAI model family configurations
 
 from llmeta.capabilities import ModelCapabilities
 from llmeta.models.base import ModelFamily
-from llmeta.models.config import ModelFamilyConfig
+from llmeta.models.config import ModelFamilyConfig, SpecificModelConfig
 from llmeta.provider import Provider
 
 # ============================================================================
@@ -37,21 +37,25 @@ GPT_4 = ModelFamilyConfig(
     ),
     # 特定模型的精确配置 / Precise configuration for specific models
     specific_models={
-        "gpt-4-turbo": (
-            "4.0",
-            "turbo",
-            ModelCapabilities(
+        "gpt-4-turbo": SpecificModelConfig(
+            version="4.0",
+            variant="turbo",
+            capabilities=ModelCapabilities(
                 supports_vision=True,  # turbo 支持视觉
                 supports_function_calling=True,
                 supports_streaming=True,
                 max_tokens=4096,
                 context_window=128000,
             ),
+            patterns=[
+                "gpt-4-turbo-{year:4d}-{month:2d}-{day:2d}",
+                "gpt-4-turbo",
+            ],
         ),
-        "gpt-4o": (
-            "4.0",
-            "omni",
-            ModelCapabilities(
+        "gpt-4o": SpecificModelConfig(
+            version="4.0",
+            variant="omni",
+            capabilities=ModelCapabilities(
                 supports_vision=True,
                 supports_audio=True,  # omni 支持音频
                 supports_streaming=True,
@@ -59,10 +63,10 @@ GPT_4 = ModelFamilyConfig(
                 context_window=128000,
             ),
         ),
-        "gpt-4-0125-preview": (
-            "4.0",
-            "base",  # preview 版本是 base variant
-            ModelCapabilities(
+        "gpt-4-0125-preview": SpecificModelConfig(
+            version="4.0",
+            variant="base",  # preview 版本是 base variant
+            capabilities=ModelCapabilities(
                 supports_function_calling=True,
                 supports_streaming=True,
                 max_tokens=8192,

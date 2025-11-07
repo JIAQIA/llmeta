@@ -491,7 +491,7 @@ After adding, please verify the following:
 It's recommended to add test cases for the new model family:
 
 ```python
-# tests/unit_tests/test_gemini.py
+# tests/test_gemini.py
 import unittest
 from llmeta import LLMeta, ModelFamily, Provider
 
@@ -570,7 +570,7 @@ class TestGemini(unittest.TestCase):
 - `llmeta/models/families/` - 各提供商的家族配置
 - `llmeta/provider.py` - 提供商定义
 - `llmeta/capabilities.py` - 能力字段定义
-- `tests/unit_tests/test_auto_register.py` - 自动注册测试
+- `tests/test_auto_register.py` - 自动注册测试
 
 ---
 

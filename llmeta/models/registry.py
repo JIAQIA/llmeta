@@ -94,6 +94,14 @@ def match_model_pattern(model_name: str) -> dict[str, Any] | None:
     """
     匹配模型名称到模式 / Match model name to pattern
 
+    优先级：
+    1. specific_models 的子 patterns
+    2. 家族的父 patterns
+
+    Priority:
+    1. Sub-patterns in specific_models
+    2. Parent patterns in family
+
     Args:
         model_name: 模型名称 / Model name
 
@@ -104,7 +112,29 @@ def match_model_pattern(model_name: str) -> dict[str, Any] | None:
 
     model_lower = model_name.lower()
 
-    # 遍历所有家族配置 / Iterate all family configs
+    # 【最高优先级】遍历所有家族配置的 specific_models 的子 patterns
+    # [Highest Priority] Iterate all specific_models sub-patterns in family configs
+    for config in _FAMILY_CONFIGS.values():
+        for spec_model_name, spec_config in config.specific_models.items():
+            if not spec_config.patterns:
+                continue
+
+            for pattern in spec_config.patterns:
+                result = parse.parse(pattern, model_lower)
+                if result:
+                    # 转换为字典并添加默认值 / Convert to dict and add defaults
+                    matched: dict[str, Any] = dict(result.named)
+                    if not matched.get("version"):
+                        matched["version"] = spec_config.version
+                    matched["family"] = config.family
+                    matched["provider"] = config.provider
+                    matched["variant"] = spec_config.variant
+                    # 标记这是从 specific_model 匹配的 / Mark this as matched from specific_model
+                    matched["_from_specific_model"] = spec_model_name
+                    return matched
+
+    # 【次优先级】遍历所有家族配置的父 patterns
+    # [Secondary Priority] Iterate all parent patterns in family configs
     for config in _FAMILY_CONFIGS.values():
         for pattern in config.patterns:
             result = parse.parse(pattern, model_lower)
@@ -160,18 +190,40 @@ def get_specific_model_config(
     """
     获取特定模型的配置 / Get configuration for a specific model
 
+    支持两种方式：
+    1. 精确匹配 model_name
+    2. 通过子 patterns 匹配
+
+    Supports two ways:
+    1. Exact match by model_name
+    2. Match by sub-patterns
+
     Args:
         model_name: 模型名称 / Model name
 
     Returns:
         tuple | None: (version, variant, capabilities) 或 None
     """
+    import parse  # type: ignore[import-untyped]
+
     model_lower = model_name.lower()
 
-    # 遍历所有家族配置查找特定模型 / Iterate all family configs to find specific model
+    # 方式1：精确匹配 / Method 1: Exact match
     for config in _FAMILY_CONFIGS.values():
         if model_lower in config.specific_models:
-            return config.specific_models[model_lower]
+            spec_config = config.specific_models[model_lower]
+            return (spec_config.version, spec_config.variant, spec_config.capabilities)
+
+    # 方式2：通过子 patterns 匹配 / Method 2: Match by sub-patterns
+    for config in _FAMILY_CONFIGS.values():
+        for spec_model_name, spec_config in config.specific_models.items():
+            if not spec_config.patterns:
+                continue
+
+            for pattern in spec_config.patterns:
+                result = parse.parse(pattern, model_lower)
+                if result:
+                    return (spec_config.version, spec_config.variant, spec_config.capabilities)
 
     return None
 

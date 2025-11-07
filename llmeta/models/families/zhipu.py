@@ -9,7 +9,7 @@
 
 from llmeta.capabilities import ModelCapabilities
 from llmeta.models.base import ModelFamily
-from llmeta.models.config import ModelFamilyConfig
+from llmeta.models.config import ModelFamilyConfig, SpecificModelConfig
 from llmeta.provider import Provider
 
 # ============================================================================
@@ -36,10 +36,10 @@ GLM_4V = ModelFamilyConfig(
     ),
     # 特定模型的精确配置 / Precise configuration for specific models
     specific_models={
-        "glm-4v-plus": (
-            "4.0",
-            "vision-plus",
-            ModelCapabilities(
+        "glm-4v-plus": SpecificModelConfig(
+            version="4.0",
+            variant="vision-plus",
+            capabilities=ModelCapabilities(
                 supports_vision=True,
                 supports_video=True,  # plus 支持视频
                 supports_streaming=True,
@@ -51,11 +51,15 @@ GLM_4V = ModelFamilyConfig(
                 max_video_size_mb=20.0,
                 max_video_duration_seconds=30,
             ),
+            patterns=[
+                "glm-4v-plus-{mmdd:4d}",
+                "glm-4v-plus",
+            ],
         ),
-        "glm-4v-plus-0111": (
-            "4.0",
-            "vision-plus-0111",
-            ModelCapabilities(
+        "glm-4v-plus-0111": SpecificModelConfig(
+            version="4.0",
+            variant="vision-plus-0111",
+            capabilities=ModelCapabilities(
                 supports_vision=True,
                 supports_video=True,
                 supports_streaming=True,
@@ -68,10 +72,10 @@ GLM_4V = ModelFamilyConfig(
                 max_video_duration_seconds=None,  # 无时长限制
             ),
         ),
-        "glm-4v-flash": (
-            "4.0",
-            "vision-flash",
-            ModelCapabilities(
+        "glm-4v-flash": SpecificModelConfig(
+            version="4.0",
+            variant="vision-flash",
+            capabilities=ModelCapabilities(
                 supports_vision=True,
                 supports_streaming=True,
                 max_tokens=8192,
