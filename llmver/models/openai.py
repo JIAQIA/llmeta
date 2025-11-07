@@ -7,6 +7,8 @@
 OpenAI 模型定义 / OpenAI model definitions
 """
 
+from datetime import date
+
 from llmver.capabilities import ModelCapabilities
 from llmver.models.base import ModelFamily, ModelInfo, parse_version, register_model
 from llmver.provider import Provider
@@ -161,5 +163,49 @@ register_model(
         ),
         version_tuple=parse_version("1.0"),
         variant_priority=(0, 5),  # preview 介于 mini 和 base 之间 / preview is between mini and base
+    ),
+)
+
+# 带日期的模型示例 / Models with release dates
+# 这些模型会自动从名称中解析日期 / These models will automatically parse dates from their names
+# 例如: gpt-4-turbo-2024-04-09 会被识别为 gpt-4-turbo 的 2024-04-09 版本
+# Example: gpt-4-turbo-2024-04-09 will be recognized as gpt-4-turbo with release date 2024-04-09
+
+register_model(
+    "gpt-4-turbo-2024-04-09",
+    ModelInfo(
+        provider=Provider.OPENAI,
+        family=ModelFamily.GPT_4,
+        version="4.0",
+        variant="turbo",
+        capabilities=ModelCapabilities(
+            supports_vision=True,
+            supports_function_calling=True,
+            supports_streaming=True,
+            max_tokens=4096,
+            context_window=128000,
+        ),
+        version_tuple=parse_version("4.0"),
+        variant_priority=(2,),
+        release_date=date(2024, 4, 9),
+    ),
+)
+
+register_model(
+    "gpt-4-0125-preview",
+    ModelInfo(
+        provider=Provider.OPENAI,
+        family=ModelFamily.GPT_4,
+        version="4.0",
+        variant="base",
+        capabilities=ModelCapabilities(
+            supports_function_calling=True,
+            supports_streaming=True,
+            max_tokens=8192,
+            context_window=128000,
+        ),
+        version_tuple=parse_version("4.0"),
+        variant_priority=(1,),
+        release_date=date(2024, 1, 25),
     ),
 )

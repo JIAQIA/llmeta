@@ -7,12 +7,14 @@
 模型版本测试 / Model version tests
 """
 
+import unittest
+
 import pytest
 
 from llmver import ModelFamily, ModelVersion, Provider
 
 
-class TestModelVersion:
+class TestModelVersion(unittest.TestCase):
     """模型版本测试类 / Model version test class"""
 
     def test_init_from_string(self) -> None:
@@ -174,3 +176,66 @@ class TestModelVersion:
         assert model_openai.provider == Provider.OPENAI
         assert model_default.provider == Provider.OPENAI
         assert model_openai.family == model_default.family
+
+    def test_release_date_parsing(self) -> None:
+        """测试发布日期解析 / Test release date parsing"""
+        from datetime import date
+
+        # 测试 YYYY-MM-DD 格式
+        model1 = ModelVersion("gpt-4-turbo-2024-04-09")
+        assert model1.release_date == date(2024, 4, 9)
+        assert model1.family == ModelFamily.GPT_4
+        assert model1.variant == "turbo"
+
+        # 测试 MMDD 格式（假设为2024年）
+        model2 = ModelVersion("gpt-4-0125-preview")
+        assert model2.release_date == date(2024, 1, 25)
+        assert model2.family == ModelFamily.GPT_4
+
+        model3 = ModelVersion("gpt-4")
+        assert model3.release_date is None
+
+    def test_release_date_comparison(self) -> None:
+        """测试发布日期比较 / Test release date comparison"""
+        from datetime import date
+
+        # 同一型号不同日期的比较
+        model_old = ModelVersion("gpt-4-turbo-2024-01-01")
+        model_new = ModelVersion("gpt-4-turbo-2024-04-09")
+
+        assert model_old < model_new
+        assert model_new > model_old
+        assert model_old != model_new
+
+        # 没有日期的模型认为是最新的（指向latest）
+        model_no_date = ModelVersion("gpt-4-turbo")
+        model_with_date = ModelVersion("gpt-4-turbo-2024-04-09")
+
+        assert model_with_date < model_no_date  # 有日期的 < 无日期的（最新）
+        assert model_no_date > model_with_date
+
+    def test_complex_comparison_with_date(self) -> None:
+        """测试复杂的版本、型号和日期比较 / Test complex version, variant and date comparison"""
+        from datetime import date
+
+        # 创建不同版本、型号和日期的模型
+        gpt4_base_with_date = ModelVersion("gpt-4-0125-preview")  # base, 2024-01-25
+        gpt4_base_no_date = ModelVersion("gpt-4")  # base, no date
+        gpt4_turbo_with_date = ModelVersion("gpt-4-turbo-2024-04-09")  #turbo, 2024-04-09
+        gpt4_turbo_no_date = ModelVersion("gpt-4-turbo")  #turbo, no date
+
+        # 验证型号优先级
+        assert gpt4_base_with_date._variant_priority == (1,)
+        assert gpt4_turbo_with_date._variant_priority == (2,)
+
+        # 不同型号：turbo > base，无论日期如何
+        assert gpt4_base_with_date < gpt4_turbo_with_date
+        assert gpt4_base_no_date < gpt4_turbo_no_date
+
+        # 同一型号：有日期 < 无日期（无日期指向最新）
+        assert gpt4_base_with_date < gpt4_base_no_date
+        assert gpt4_turbo_with_date < gpt4_turbo_no_date
+
+        # 测试完整的比较链
+        # base(有日期) < base(无日期/最新) < turbo(有日期) < turbo(无日期/最新)
+        assert gpt4_base_with_date < gpt4_base_no_date < gpt4_turbo_with_date < gpt4_turbo_no_date

@@ -7,10 +7,12 @@
 提供商测试 / Provider tests
 """
 
+import unittest
+
 from llmver.provider import Provider
 
 
-class TestProvider:
+class TestProvider(unittest.TestCase):
     """提供商测试类 / Provider test class"""
 
     def test_from_model_name_openai(self) -> None:

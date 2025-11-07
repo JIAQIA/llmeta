@@ -8,6 +8,7 @@
 """
 
 from dataclasses import dataclass, field
+from datetime import date
 from functools import total_ordering
 from typing import Any
 
@@ -33,6 +34,7 @@ class ModelVersion:
     version: str = ""
     variant: str = ""
     capabilities: ModelCapabilities = field(default_factory=ModelCapabilities)
+    release_date: date | None = None
     _version_tuple: tuple[int, ...] = field(default_factory=tuple, repr=False)
     _variant_priority: tuple[int, ...] = field(default_factory=tuple, repr=False)
 
@@ -58,6 +60,8 @@ class ModelVersion:
         # 检查 capabilities 是否为默认的空对象 / Check if capabilities is default empty object
         if self.capabilities == ModelCapabilities():
             self.capabilities = model_info.capabilities
+        if not self.release_date:
+            self.release_date = model_info.release_date
         # 设置版本元组和型号优先级用于比较 / Set version tuple and variant priority for comparison
         self._version_tuple = model_info.version_tuple
         self._variant_priority = model_info.variant_priority
@@ -74,8 +78,8 @@ class ModelVersion:
         """
         相等比较 / Equality comparison
 
-        同一模型家族的模型才能比较，比较版本和型号优先级
-        Only models from the same family can be compared, comparing version and variant priority
+        同一模型家族的模型才能比较，比较版本、型号优先级和日期
+        Only models from the same family can be compared, comparing version, variant priority and date
         """
         if not isinstance(other, ModelVersion):
             return NotImplemented
@@ -83,14 +87,18 @@ class ModelVersion:
         if self.family != other.family:
             return False
 
-        return self._version_tuple == other._version_tuple and self._variant_priority == other._variant_priority
+        return (
+            self._version_tuple == other._version_tuple
+            and self._variant_priority == other._variant_priority
+            and self.release_date == other.release_date
+        )
 
     def __lt__(self, other: object) -> bool:
         """
         小于比较 / Less than comparison
 
-        同一模型家族的模型才能比较，先比较版本，再比较型号优先级
-        Only models from the same family can be compared, first compare version, then variant priority
+        同一模型家族的模型才能比较，先比较版本，再比较型号优先级，最后比较日期
+        Only models from the same family can be compared, first compare version, then variant priority, finally date
         """
         if not isinstance(other, ModelVersion):
             return NotImplemented
@@ -106,7 +114,19 @@ class ModelVersion:
             return self._version_tuple < other._version_tuple
 
         # 版本相同时，比较型号优先级 / When versions are the same, compare variant priority
-        return self._variant_priority < other._variant_priority
+        if self._variant_priority != other._variant_priority:
+            return self._variant_priority < other._variant_priority
+
+        # 型号优先级相同时，比较日期 / When variant priorities are the same, compare date
+        # 没有日期的模型认为是最新的（一般指向latest版本） / Models without date are considered newest (usually pointing to latest)
+        if self.release_date is None and other.release_date is None:
+            return False  # 两者都没有日期，认为相等 / Both have no date, consider equal
+        if self.release_date is None:
+            return False  # self 没有日期，认为是最新的 / self has no date, consider newest
+        if other.release_date is None:
+            return True  # other 没有日期，认为是最新的 / other has no date, consider newest
+
+        return self.release_date < other.release_date
 
     def validate_params(self, params: dict[str, Any]) -> dict[str, Any]:
         """

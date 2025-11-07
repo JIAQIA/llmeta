@@ -7,7 +7,9 @@
 模型信息基础类 / Model information base class
 """
 
+import re
 from dataclasses import dataclass
+from datetime import date
 from enum import Enum
 
 from llmver.capabilities import ModelCapabilities
@@ -69,9 +71,8 @@ class ModelInfo:
     variant: str
     capabilities: ModelCapabilities
     version_tuple: tuple[int, ...]
-    variant_priority: tuple[int, ...] = (
-        0,
-    )  # 型号优先级元组，用于同版本不同型号的比较 / Variant priority tuple for comparing different variants of the same version
+    variant_priority: tuple[int, ...] = (0,)  # 型号优先级元组，用于同版本不同型号的比较 / Variant priority tuple for comparing different variants of the same version
+    release_date: date | None = None  # 发布日期，用于同版本同型号的比较 / Release date for comparing same version and variant
 
 
 # 全局模型注册表 / Global model registry
@@ -138,6 +139,57 @@ def parse_version(version_str: str) -> tuple[int, ...]:
     return tuple(parts)
 
 
+def parse_date_from_model_name(model_name: str) -> date | None:
+    """
+    从模型名称中解析日期 / Parse date from model name
+
+    支持的格式 / Supported formats:
+    - YYYY-MM-DD (如 2024-04-09)
+    - YYYYMMDD (如 20240409)
+    - MMDD (如 0409, 假设为当前年份)
+
+    Args:
+        model_name: 模型名称 / Model name
+
+    Returns:
+        date | None: 解析的日期或None / Parsed date or None
+    """
+    # 匹配 YYYY-MM-DD 格式 / Match YYYY-MM-DD format
+    match = re.search(r"(\d{4})-(\d{2})-(\d{2})", model_name)
+    if match:
+        year, month, day = match.groups()
+        try:
+            return date(int(year), int(month), int(day))
+        except ValueError:
+            pass
+
+    # 匹配 YYYYMMDD 格式 / Match YYYYMMDD format
+    match = re.search(r"(\d{8})", model_name)
+    if match:
+        date_str = match.group(1)
+        try:
+            year = int(date_str[0:4])
+            month = int(date_str[4:6])
+            day = int(date_str[6:8])
+            return date(year, month, day)
+        except ValueError:
+            pass
+
+    # 匹配 MMDD 格式（假设为当前年份） / Match MMDD format (assume current year)
+    match = re.search(r"-(\d{4})(?!\d)", model_name)
+    if match:
+        mmdd = match.group(1)
+        try:
+            month = int(mmdd[0:2])
+            day = int(mmdd[2:4])
+            # 使用2024作为默认年份 / Use 2024 as default year
+            return date(2024, month, day)
+        except ValueError:
+            pass
+
+    return None
+
+
 def parse_model_name(model_name: str) -> tuple[Provider | None, str]:
     """
     解析模型名称，支持 {{Provider::ModelName}} 语法 / Parse model name, supporting {{Provider::ModelName}} syntax
@@ -194,17 +246,21 @@ def get_model_info(model_name: str) -> ModelInfo:
     # 检查注册表中是否有精确匹配 / Check if there's an exact match in the registry
     if model_lower in MODEL_REGISTRY:
         info = MODEL_REGISTRY[model_lower]
-        # 如果指定了Provider且与注册的不同，创建新的ModelInfo
-        # If Provider is specified and different from registered, create new ModelInfo
-        if specified_provider and specified_provider != info.provider:
+        # 尝试从模型名称解析日期 / Try to parse date from model name
+        parsed_date = parse_date_from_model_name(actual_name)
+        
+        # 如果指定了Provider且与注册的不同，或解析到了日期，创建新的ModelInfo
+        # If Provider is specified and different from registered, or date is parsed, create new ModelInfo
+        if (specified_provider and specified_provider != info.provider) or parsed_date:
             return ModelInfo(
-                provider=specified_provider,
+                provider=specified_provider or info.provider,
                 family=info.family,
                 version=info.version,
                 variant=info.variant,
                 capabilities=info.capabilities,
                 version_tuple=info.version_tuple,
                 variant_priority=info.variant_priority,
+                release_date=parsed_date or info.release_date,
             )
         return info
 
@@ -214,22 +270,27 @@ def get_model_info(model_name: str) -> ModelInfo:
         if "::" in registered_name:
             continue
         if registered_name in model_lower or model_lower in registered_name:
-            # 如果指定了Provider且与注册的不同，创建新的ModelInfo
-            # If Provider is specified and different from registered, create new ModelInfo
-            if specified_provider and specified_provider != info.provider:
+            # 尝试从模型名称解析日期 / Try to parse date from model name
+            parsed_date = parse_date_from_model_name(actual_name)
+            
+            # 如果指定了Provider且与注册的不同，或解析到了日期，创建新的ModelInfo
+            # If Provider is specified and different from registered, or date is parsed, create new ModelInfo
+            if (specified_provider and specified_provider != info.provider) or parsed_date:
                 return ModelInfo(
-                    provider=specified_provider,
+                    provider=specified_provider or info.provider,
                     family=info.family,
                     version=info.version,
                     variant=info.variant,
                     capabilities=info.capabilities,
                     version_tuple=info.version_tuple,
                     variant_priority=info.variant_priority,
+                    release_date=parsed_date or info.release_date,
                 )
             return info
 
     # 如果没有找到，返回默认信息 / If not found, return default information
     provider = specified_provider or Provider.from_model_name(actual_name)
+    parsed_date = parse_date_from_model_name(actual_name)
 
     return ModelInfo(
         provider=provider,
@@ -239,4 +300,5 @@ def get_model_info(model_name: str) -> ModelInfo:
         capabilities=ModelCapabilities(),
         version_tuple=(0,),
         variant_priority=(0,),
+        release_date=parsed_date,
     )
