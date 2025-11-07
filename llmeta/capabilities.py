@@ -26,7 +26,11 @@ class ModelCapabilities:
     supports_video: bool = False  # 是否支持视频输入 / Whether video input is supported
     supports_pdf: bool = False  # 是否支持PDF输入 / Whether PDF input is supported
     supports_function_calling: bool = False  # 是否支持函数调用 / Whether function calling is supported
+    supports_structured_outputs: bool = True  # 是否支持结构化输出 / Whether structured outputs are supported
     supports_streaming: bool = True  # 是否支持流式输出 / Whether streaming output is supported
+    supports_fine_tuning: bool = False  # 是否支持微调 / Whether fine-tuning is supported
+    supports_distillation: bool = False  # 是否支持蒸馏 / Whether distillation is supported
+    supports_predicted_outputs: bool = False  # 是否支持预测输出 / Whether predicted outputs are supported
 
     # 通用限制 / General limitations
     max_tokens: int | None = None  # 最大token数 / Maximum number of tokens

@@ -57,10 +57,11 @@ class ModelFamilyConfig:
 
     # 命名模式 / Naming patterns
     # 按优先级排序，更具体的在前 / Ordered by priority, more specific first
-    patterns: list[str]
+    patterns: list[str] = field(default_factory=list)
 
     # 默认值 / Defaults
     version_default: str = "1.0"
+    variant_default: str = field(default="base")
 
     # 默认能力 / Default capabilities
     capabilities: ModelCapabilities = field(default_factory=ModelCapabilities)

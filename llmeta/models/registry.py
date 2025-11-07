@@ -143,6 +143,8 @@ def match_model_pattern(model_name: str) -> dict[str, Any] | None:
                 matched = dict(result.named)
                 if not matched.get("version"):
                     matched["version"] = config.version_default
+                if not matched.get("variant"):
+                    matched["variant"] = config.variant_default
                 matched["family"] = config.family
                 matched["provider"] = config.provider
                 return matched
@@ -184,9 +186,7 @@ def get_family_info(family: ModelFamily) -> dict[str, Any]:
     }
 
 
-def get_specific_model_config(
-    model_name: str,
-) -> tuple[str, str, ModelCapabilities | None] | None:
+def get_specific_model_config(model_name: str) -> tuple[str, str, ModelCapabilities | None] | None:
     """
     获取特定模型的配置 / Get configuration for a specific model
 

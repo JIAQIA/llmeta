@@ -34,10 +34,14 @@ class ModelFamily(str, Enum, metaclass=DynamicEnumMeta):
     """
 
     # OpenAI 家族 / OpenAI family
+    GPT_5 = "gpt-5"
+    GPT_4_1 = "gpt-4.1"
+    GPT_4O = "gpt-4o"
     GPT_4 = "gpt-4"
     GPT_3_5 = "gpt-3.5"
     O1 = "o1"
     O3 = "o3"
+    O4 = "o4"
 
     # Anthropic 家族 / Anthropic family
     CLAUDE = "claude"
@@ -158,10 +162,12 @@ def parse_date_from_model_name(model_name: str) -> date | None:
     """
     从模型名称中解析日期 / Parse date from model name
 
+    使用 parse 库进行模式匹配，避免使用正则表达式
+    Use parse library for pattern matching, avoiding regular expressions
+
     支持的格式 / Supported formats:
     - YYYY-MM-DD (如 2024-04-09)
-    - YYYYMMDD (如 20240409)
-    - MMDD (如 0409, 假设为当前年份)
+    - MMDD (如 0409, 假设为2024年)
 
     Args:
         model_name: 模型名称 / Model name
@@ -169,38 +175,15 @@ def parse_date_from_model_name(model_name: str) -> date | None:
     Returns:
         date | None: 解析的日期或None / Parsed date or None
     """
-    # 匹配 YYYY-MM-DD 格式 / Match YYYY-MM-DD format
-    match = re.search(r"(\d{4})-(\d{2})-(\d{2})", model_name)
-    if match:
-        year, month, day = match.groups()
-        try:
-            return date(int(year), int(month), int(day))
-        except ValueError:
-            pass
+    from llmeta.models.patterns import parse_date_from_match
+    from llmeta.models.registry import match_model_pattern
 
-    # 匹配 YYYYMMDD 格式 / Match YYYYMMDD format
-    match = re.search(r"(\d{8})", model_name)
-    if match:
-        date_str = match.group(1)
-        try:
-            year = int(date_str[0:4])
-            month = int(date_str[4:6])
-            day = int(date_str[6:8])
-            return date(year, month, day)
-        except ValueError:
-            pass
-
-    # 匹配 MMDD 格式（假设为当前年份） / Match MMDD format (assume current year)
-    match = re.search(r"-(\d{4})(?!\d)", model_name)
-    if match:
-        mmdd = match.group(1)
-        try:
-            month = int(mmdd[0:2])
-            day = int(mmdd[2:4])
-            # 使用2024作为默认年份 / Use 2024 as default year
-            return date(2024, month, day)
-        except ValueError:
-            pass
+    # 优先使用模式匹配 / Prioritize pattern matching
+    matched = match_model_pattern(model_name)
+    if matched:
+        parsed_date = parse_date_from_match(matched)
+        if parsed_date:
+            return parsed_date
 
     return None
 
@@ -443,8 +426,10 @@ def get_model_info(model_name: str, auto_register: bool = True) -> ModelInfo:
     2. "openai::gpt-4" - 指定Provider / Specify Provider
     3. "Tencent::deepseek-chat" - 指定Provider / Specify Provider
 
-    如果模型未注册且 auto_register=True，将自动注册模型
-    If model is not registered and auto_register=True, will auto-register the model
+    查找优先级 / Search priority:
+    1. 已注册的精确匹配（带 Provider 前缀）/ Exact match with Provider prefix
+    2. 已注册的精确匹配（不带 Provider 前缀）/ Exact match without Provider prefix
+    3. 自动注册（使用 match_model_pattern）/ Auto-register (using match_model_pattern)
 
     Args:
         model_name: 模型名称 / Model name
@@ -457,44 +442,14 @@ def get_model_info(model_name: str, auto_register: bool = True) -> ModelInfo:
     specified_provider, actual_name = parse_model_name(model_name)
     model_lower = actual_name.lower()
 
-    # 【最高优先级】检查是否有特定模型的精确配置 / [Highest Priority] Check if there's a specific model configuration
-    from llmeta.models.registry import get_specific_model_config
-
-    specific_config = get_specific_model_config(actual_name)
-    if specific_config:
-        version, variant, custom_capabilities = specific_config
-        # 使用特定配置注册模型 / Register model with specific configuration
-        family = infer_model_family(actual_name)
-        provider = specified_provider or Provider.from_model_name(actual_name)
-
-        # 如果没有提供自定义能力，使用家族默认能力 / If no custom capabilities, use family default
-        if custom_capabilities is None:
-            from llmeta.models.registry import get_default_capabilities
-
-            custom_capabilities = get_default_capabilities(family)
-
-        model_info = ModelInfo(
-            provider=provider,
-            family=family,
-            version=version,
-            variant=variant,
-            capabilities=custom_capabilities,
-            version_tuple=parse_version(version),
-            variant_priority=infer_variant_priority(variant),
-            release_date=parse_date_from_model_name(actual_name),
-        )
-        # 注册到全局注册表 / Register to global registry
-        register_model(actual_name, model_info)
-        return model_info
-
-    # 如果指定了Provider，优先查找 "Provider::ModelName" 格式的注册
-    # If Provider is specified, prioritize "Provider::ModelName" format registration
+    # 【优先级1】如果指定了Provider，优先查找 "Provider::ModelName" 格式的注册
+    # [Priority 1] If Provider is specified, prioritize "Provider::ModelName" format registration
     if specified_provider:
         provider_key = f"{specified_provider.value}::{model_lower}"
         if provider_key in MODEL_REGISTRY:
             return MODEL_REGISTRY[provider_key]
 
-    # 检查注册表中是否有精确匹配 / Check if there's an exact match in the registry
+    # 【优先级2】检查注册表中是否有精确匹配 / [Priority 2] Check if there's an exact match in the registry
     if model_lower in MODEL_REGISTRY:
         info = MODEL_REGISTRY[model_lower]
         # 尝试从模型名称解析日期 / Try to parse date from model name
@@ -515,48 +470,10 @@ def get_model_info(model_name: str, auto_register: bool = True) -> ModelInfo:
             )
         return info
 
-    # 检查是否有部分匹配（仅当查询的模型名以已注册模型名开头且后面是日期时）
-    # Check if there's a partial match (only when query model name starts with registered model name followed by date)
-    # 找到最长的匹配项 / Find the longest match
-    best_match = None
-    best_match_length = 0
-
-    for registered_name, info in MODEL_REGISTRY.items():
-        # 跳过带provider前缀的注册项 / Skip registrations with provider prefix
-        if "::" in registered_name:
-            continue
-        # 只有当查询的模型名以已注册模型名开头且后面是日期格式时才匹配
-        # Only match when query starts with registered name and is followed by date format
-        if model_lower.startswith(registered_name + "-"):
-            # 检查后面是否是日期格式 / Check if followed by date format
-            suffix = model_lower[len(registered_name) + 1 :]
-            if (re.match(r"^\d{4}(-\d{2}){2}$", suffix) or re.match(r"^\d{4}$", suffix)) and len(
-                registered_name
-            ) > best_match_length:
-                best_match = (registered_name, info)
-                best_match_length = len(registered_name)
-
-    if best_match:
-        registered_name, info = best_match
-        # 尝试从模型名称解析日期 / Try to parse date from model name
-        parsed_date = parse_date_from_model_name(actual_name)
-
-        # 如果指定了Provider且与注册的不同，或解析到了日期，创建新的ModelInfo
-        # If Provider is specified and different from registered, or date is parsed, create new ModelInfo
-        if (specified_provider and specified_provider != info.provider) or parsed_date:
-            return ModelInfo(
-                provider=specified_provider or info.provider,
-                family=info.family,
-                version=info.version,
-                variant=info.variant,
-                capabilities=info.capabilities,
-                version_tuple=info.version_tuple,
-                variant_priority=info.variant_priority,
-                release_date=parsed_date or info.release_date,
-            )
-        return info
-
-    # 如果没有找到且启用自动注册，尝试自动注册 / If not found and auto-register enabled, try auto-registration
+    # 【优先级3】如果没有找到且启用自动注册，尝试自动注册
+    # [Priority 3] If not found and auto-register enabled, try auto-registration
+    # auto_register_model 内部会调用 match_model_pattern 进行模式匹配
+    # auto_register_model internally calls match_model_pattern for pattern matching
     if auto_register:
         try:
             return auto_register_model(actual_name, specified_provider)
@@ -564,7 +481,7 @@ def get_model_info(model_name: str, auto_register: bool = True) -> ModelInfo:
             # 自动注册失败，返回默认信息 / Auto-registration failed, return default information
             pass
 
-    # 如果没有找到，返回默认信息 / If not found, return default information
+    # 【兜底】如果没有找到，返回默认信息 / [Fallback] If not found, return default information
     provider = specified_provider or Provider.from_model_name(actual_name)
     parsed_date = parse_date_from_model_name(actual_name)
 

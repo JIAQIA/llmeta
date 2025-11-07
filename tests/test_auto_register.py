@@ -124,9 +124,9 @@ class TestAutoRegister(unittest.TestCase):
 
     def test_auto_register_comparison(self) -> None:
         """测试自动注册的模型可以进行比较 / Test auto-registered models can be compared"""
-        model1 = LLMeta("gpt-4-turbo-v1")
-        model2 = LLMeta("gpt-4-turbo-v2")
-        model3 = LLMeta("gpt-4-mini")
+        model1 = LLMeta("gpt-4o-turbo-v1")
+        model2 = LLMeta("gpt-4o-turbo-v2")
+        model3 = LLMeta("gpt-4o-mini")
 
         # 同一家族的模型可以比较 / Models from same family can be compared
         assert model1.family == model2.family == model3.family

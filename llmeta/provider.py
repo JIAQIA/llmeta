@@ -41,31 +41,20 @@ class Provider(str, Enum, metaclass=DynamicEnumMeta):
         """
         从模型名称推断提供商 / Infer provider from model name
 
+        复用模型注册表中的模式匹配逻辑，避免重复定义
+        Reuse pattern matching logic from model registry to avoid duplication
+
         Args:
             model_name: 模型名称 / Model name
 
         Returns:
             Provider: 提供商枚举 / Provider enum
         """
-        model_lower = model_name.lower()
+        from llmeta.models.registry import match_model_pattern
 
-        # 定义提供商关键词映射 / Define provider keyword mapping
-        provider_keywords = {
-            cls.OPENAI: ["gpt", "o1", "o3"],
-            cls.ANTHROPIC: ["claude"],
-            cls.ZHIPU: ["glm", "chatglm", "cogview", "cogvideo"],
-            cls.ALIBABA: ["qwen", "tongyi"],
-            cls.BAIDU: ["ernie", "wenxin"],
-            cls.TENCENT: ["hunyuan"],
-            cls.MOONSHOT: ["moonshot"],
-            cls.DEEPSEEK: ["deepseek"],
-            cls.MINIMAX: ["minimax", "abab"],
-        }
-
-        # 匹配提供商 / Match provider
-        for provider, keywords in provider_keywords.items():
-            match any(keyword in model_lower for keyword in keywords):
-                case True:
-                    return provider
+        # 使用模式匹配找到对应的配置 / Use pattern matching to find the configuration
+        matched = match_model_pattern(model_name)
+        if matched and "provider" in matched:
+            return matched["provider"]
 
         return cls.UNKNOWN

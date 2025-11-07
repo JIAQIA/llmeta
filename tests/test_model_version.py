@@ -39,25 +39,38 @@ class TestModelVersion(unittest.TestCase):
         # Note: GPT-4 and GPT-3.5 are different families, cannot be compared directly
         # 我们改为测试同一家族不同型号的比较
         # We test comparison of different variants in the same family instead
+        gpt4_preview = LLMeta("gpt-4-0125-preview")
         gpt4_base = LLMeta("gpt-4")
         gpt4_turbo = LLMeta("gpt-4-turbo")
-        gpt4o = LLMeta("gpt-4o")
-        gpt4o_mini = LLMeta("gpt-4o-mini")
 
-        # 测试型号优先级比较: mini < base < turbo < omni
-        # Test variant priority comparison: mini < base < turbo < omni
-        assert gpt4o_mini < gpt4_base
+        # 测试同一家族（GPT-4）不同型号和日期的比较
+        # Test comparisons within GPT-4 family
+        assert gpt4_preview < gpt4_base
         assert gpt4_base < gpt4_turbo
-        assert gpt4_turbo < gpt4o
-        assert gpt4o_mini < gpt4o
+        assert gpt4_preview < gpt4_turbo
+
+    def test_version_comparison_same_family_gpt4o(self) -> None:
+        """测试 GPT-4o 家族内型号优先级比较 / Test variant priority within GPT-4o family"""
+        gpt4o_mini = LLMeta("gpt-4o-mini")
+        gpt4o_base = LLMeta("gpt-4o")
+        gpt4o_audio = LLMeta("gpt-4o-audio-preview")
+        gpt4o_mini_realtime = LLMeta("gpt-4o-mini-realtime-preview")
+
+        assert gpt4o_mini < gpt4o_base
+        assert gpt4o_audio < gpt4o_base
+        assert gpt4o_mini_realtime < gpt4o_base
+        assert gpt4o_mini < gpt4o_audio or gpt4o_audio == gpt4o_mini
 
     def test_version_comparison_different_family_raises(self) -> None:
         """测试不同模型家族的版本比较应该抛出异常 / Test version comparison for different families should raise"""
         gpt4 = LLMeta("gpt-4")
         glm4 = LLMeta("glm-4")
+        gpt4o = LLMeta("gpt-4o-mini")
 
         with pytest.raises(ValueError, match="无法比较不同模型家族的模型"):
             _ = gpt4 > glm4
+        with pytest.raises(ValueError, match="无法比较不同模型家族的模型"):
+            _ = gpt4 > gpt4o
 
     def test_capabilities(self) -> None:
         """测试能力检测 / Test capability detection"""
@@ -93,7 +106,9 @@ class TestModelVersion(unittest.TestCase):
         """测试推理模型 / Test thinking models"""
         o1 = LLMeta("o1")
         assert o1.capabilities.supports_thinking is True
-        assert o1.capabilities.supports_streaming is False
+        assert o1.capabilities.supports_streaming is True
+        assert o1.capabilities.supports_function_calling is True
+        assert o1.capabilities.supports_structured_outputs is True
 
     def test_string_representation(self) -> None:
         """测试字符串表示 / Test string representation"""
@@ -134,7 +149,7 @@ class TestModelVersion(unittest.TestCase):
 
         assert gpt4.family == ModelFamily.GPT_4
         assert gpt4_turbo.family == ModelFamily.GPT_4
-        assert gpt4o.family == ModelFamily.GPT_4
+        assert gpt4o.family == ModelFamily.GPT_4O
 
         # GLM-4 家族
         glm4 = LLMeta("glm-4")
@@ -253,6 +268,10 @@ class TestModelVersion(unittest.TestCase):
         gpt4o = LLMeta("gpt-4o")
         assert gpt4o.capabilities.supports_vision is True
         assert gpt4o.capabilities.supports_audio is True
+        assert gpt4o.capabilities.supports_structured_outputs is True
+        assert gpt4o.capabilities.supports_fine_tuning is True
+        assert gpt4o.capabilities.supports_distillation is True
+        assert gpt4o.capabilities.supports_predicted_outputs is True
         assert gpt4o.variant == "omni"
 
         # 测试 GLM-4V-Plus 的特殊 capabilities
