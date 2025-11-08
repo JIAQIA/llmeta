@@ -11,7 +11,6 @@
 Provides registration and query interfaces for model family configurations
 """
 
-import copy
 from typing import TYPE_CHECKING, Any
 
 from llmeta.capabilities import ModelCapabilities

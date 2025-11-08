@@ -8,6 +8,7 @@
 """
 
 from enum import Enum
+from typing import cast
 
 from llmeta.models.dynamic_enum import DynamicEnumMeta
 
@@ -55,6 +56,6 @@ class Provider(str, Enum, metaclass=DynamicEnumMeta):
         # 使用模式匹配找到对应的配置 / Use pattern matching to find the configuration
         matched = match_model_pattern(model_name)
         if matched and "provider" in matched:
-            return matched["provider"]
+            return cast("Provider", matched["provider"])
 
         return cls.UNKNOWN
