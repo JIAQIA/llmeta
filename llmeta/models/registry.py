@@ -96,12 +96,14 @@ def match_model_pattern(model_name: str) -> dict[str, Any] | None:
     匹配模型名称到模式 / Match model name to pattern
 
     优先级：
-    1. specific_models 的子 patterns
-    2. 家族的父 patterns
+    1. specific_models 的精确匹配
+    2. specific_models 的子 patterns
+    3. 家族的父 patterns
 
     Priority:
-    1. Sub-patterns in specific_models
-    2. Parent patterns in family
+    1. Exact match in specific_models
+    2. Sub-patterns in specific_models
+    3. Parent patterns in family
 
     Args:
         model_name: 模型名称 / Model name
@@ -114,15 +116,28 @@ def match_model_pattern(model_name: str) -> dict[str, Any] | None:
     model_lower = model_name.lower()
     matched: dict[str, Any]
 
-    # 【最高优先级】遍历所有家族配置的 specific_models 的子 patterns
-    # [Highest Priority] Iterate all specific_models sub-patterns in family configs
+    # 【最高优先级】精确匹配 specific_models 的名称
+    # [Highest Priority] Exact match in specific_models
+    for config in _FAMILY_CONFIGS.values():
+        if model_lower in config.specific_models:
+            spec_config = config.specific_models[model_lower]
+            return {
+                "version": spec_config.version,
+                "variant": spec_config.variant,
+                "family": config.family,
+                "provider": config.provider,
+                "capabilities": spec_config.capabilities,
+                "_from_specific_model": model_lower,
+            }
+
+    # 【次优先级】遍历所有家族配置的 specific_models 的子 patterns
+    # [Secondary Priority] Iterate all specific_models sub-patterns in family configs
     for config in _FAMILY_CONFIGS.values():
         for _spec_model_name, spec_config in config.specific_models.items():
-            patterns = copy.copy(spec_config.patterns)
-            if _spec_model_name not in patterns:
-                patterns.append(_spec_model_name)
+            if not spec_config.patterns:
+                continue
 
-            for pattern in patterns:
+            for pattern in spec_config.patterns:
                 result = parse.parse(pattern, model_lower)
                 if result:
                     # 转换为字典并添加默认值 / Convert to dict and add defaults
@@ -137,8 +152,8 @@ def match_model_pattern(model_name: str) -> dict[str, Any] | None:
                     matched["_from_specific_model"] = _spec_model_name
                     return matched
 
-    # 【次优先级】遍历所有家族配置的父 patterns
-    # [Secondary Priority] Iterate all parent patterns in family configs
+    # 【最低优先级】遍历所有家族配置的父 patterns
+    # [Lowest Priority] Iterate all parent patterns in family configs
     for config in _FAMILY_CONFIGS.values():
         for pattern in config.patterns:
             result = parse.parse(pattern, model_lower)

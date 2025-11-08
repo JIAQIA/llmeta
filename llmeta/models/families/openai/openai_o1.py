@@ -1,0 +1,51 @@
+# filename: openai_o1.py
+# @Time    : 2025/11/8 13:33
+# @Author  : JQQ
+# @Email   : jiaqia@qknode.com
+# @Software: PyCharm
+from llmeta.capabilities import ModelCapabilities
+from llmeta.models.base import ModelFamily
+from llmeta.models.config import ModelFamilyConfig, SpecificModelConfig
+from llmeta.provider import Provider
+
+# ============================================================================
+# O1 系列 / O1 Series
+# ============================================================================
+
+O1 = ModelFamilyConfig(
+    family=ModelFamily.O1,
+    provider=Provider.OPENAI,
+    version_default="1.0",
+    patterns=[
+        "o1-{year:4d}-{month:2d}-{day:2d}",
+        "o1-{variant}-{year:4d}-{month:2d}-{day:2d}",
+        "o1-{variant}",
+        "o1",
+    ],
+    capabilities=ModelCapabilities(
+        supports_thinking=True,
+        supports_function_calling=True,
+        supports_streaming=True,
+        supports_structured_outputs=True,
+        max_tokens=100000,
+        context_window=200000,
+    ),
+    specific_models={
+        "o1-pro": SpecificModelConfig(
+            version="1.0",
+            variant="pro",
+            capabilities=ModelCapabilities(
+                supports_thinking=True,
+                supports_function_calling=True,
+                supports_streaming=False,
+                supports_structured_outputs=True,
+                max_tokens=100000,
+                context_window=200000,
+            ),
+            patterns=[
+                "o1-pro-{year:4d}-{month:2d}-{day:2d}",
+                "o1-pro",
+            ],
+        ),
+    },
+)

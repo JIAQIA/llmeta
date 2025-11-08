@@ -103,6 +103,8 @@ GLM_4 = ModelFamilyConfig(
         "glm-4-{variant}-{year:4d}-{month:2d}-{day:2d}",
         "glm-4-{variant}",
         "glm-4",
+        "chatglm",  # 别名 / Alias
+        "cogview",  # 别名 / Alias
     ],
     capabilities=ModelCapabilities(
         supports_function_calling=True,

@@ -1,35 +1,29 @@
-# filename: alibaba.py
-# @Time    : 2025/11/7 17:35
+# filename: openai_gpt_4.py
+# @Time    : 2025/11/8 13:31
 # @Author  : JQQ
-# @Email   : jqq1716@gmail.com
+# @Email   : jiaqia@qknode.com
 # @Software: PyCharm
-"""
-阿里巴巴模型家族配置 / Alibaba model family configurations
-"""
-
 from llmeta.capabilities import ModelCapabilities
 from llmeta.models.base import ModelFamily
 from llmeta.models.config import ModelFamilyConfig
 from llmeta.provider import Provider
 
 # ============================================================================
-# Qwen 系列 / Qwen Series
+# GPT-4 系列 / GPT-4 Series
 # ============================================================================
 
-QWEN = ModelFamilyConfig(
-    family=ModelFamily.QWEN,
-    provider=Provider.ALIBABA,
-    version_default="1.0",
+GPT_4 = ModelFamilyConfig(
+    family=ModelFamily.GPT_4,
+    provider=Provider.OPENAI,
+    version_default="4.0",
     patterns=[
-        "qwen-{version:d}-{variant}",
-        "qwen-{variant}",
-        "qwen",
-        "tongyi",  # 别名 / Alias
+        "gpt-4-{mmdd:4d}",  # gpt-4-0613
+        "gpt-4",  # gpt-4 (base)
     ],
     capabilities=ModelCapabilities(
         supports_function_calling=True,
         supports_streaming=True,
         max_tokens=8192,
-        context_window=32000,
+        context_window=128000,
     ),
 )

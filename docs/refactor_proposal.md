@@ -515,10 +515,14 @@ GEMINI = ModelFamilyConfig(
 - mypy 类型检查
 
 ### 6. **可测试性** / Testability
+
 ```python
+import llmeta.models.families.openai.openai_gpt_4
+
+
 def test_gpt4_config():
-    from llmeta.models.families.openai import GPT_4
-    assert GPT_4.family == ModelFamily.GPT_4
+    from llmeta.models.families.openai.openai_gpt_4 import GPT_4
+    assert GPT_4.family == llmeta.models.families.openai.openai_gpt_4.GPT_4
     assert GPT_4.provider == Provider.OPENAI
     assert "gpt-4-{variant}" in GPT_4.patterns
 ```

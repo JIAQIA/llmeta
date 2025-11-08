@@ -186,17 +186,17 @@ def test_existing_models():
     print("=" * 80)
 
     # 测试 OpenAI 模型
-    print("\n1. 测试 OpenAI 'gpt-4-turbo':")
-    result = match_model_pattern("gpt-4-turbo")
+    print("\n1. 测试 OpenAI 'gpt-4o-turbo':")
+    result = match_model_pattern("gpt-4o-turbo")
     print(f"   匹配结果: {result}")
     assert result is not None, "应该匹配成功"
     print("   ✓ 通过")
 
-    config = get_specific_model_config("gpt-4-turbo")
+    config = get_specific_model_config("gpt-4o-mini")
     print(f"   配置: {config}")
     assert config is not None, "应该找到配置"
     version, variant, capabilities = config
-    assert variant == "turbo", f"variant 应该是 'turbo'，实际是 {variant}"
+    assert variant == "mini", f"variant 应该是 'mini'，实际是 {variant}"
     assert capabilities.supports_vision is True, "应该支持 vision"
     print("   ✓ 通过")
 

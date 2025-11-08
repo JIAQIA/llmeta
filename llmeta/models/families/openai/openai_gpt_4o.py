@@ -1,0 +1,114 @@
+# filename: openai_gpt_4o.py
+# @Time    : 2025/11/8 13:29
+# @Author  : JQQ
+# @Email   : jiaqia@qknode.com
+# @Software: PyCharm
+from llmeta.capabilities import ModelCapabilities
+from llmeta.models.base import ModelFamily
+from llmeta.models.config import ModelFamilyConfig, SpecificModelConfig
+from llmeta.provider import Provider
+
+# ============================================================================
+# GPT-4o 系列 / GPT-4o Series
+# ============================================================================
+
+GPT_4O = ModelFamilyConfig(
+    family=ModelFamily.GPT_4O,
+    provider=Provider.OPENAI,
+    version_default="4.0",
+    variant_default="omni",
+    patterns=[
+        "gpt-4o-{variant}-{year:4d}-{month:2d}-{day:2d}",
+        "gpt-4o-{year:4d}-{month:2d}-{day:2d}",  # 日期模式优先
+        "gpt-4o-{variant}",
+        "gpt-4o",
+    ],
+    capabilities=ModelCapabilities(
+        supports_vision=True,
+        supports_streaming=True,
+        supports_function_calling=True,
+        supports_structured_outputs=True,
+        supports_fine_tuning=True,
+        supports_distillation=True,
+        supports_predicted_outputs=True,
+        max_tokens=16384,
+        context_window=128000,
+    ),
+    specific_models={
+        "gpt-4o-audio-preview": SpecificModelConfig(
+            version="4.0",
+            variant="audio-preview",
+            capabilities=ModelCapabilities(
+                supports_vision=True,
+                supports_streaming=True,
+                supports_function_calling=True,
+                supports_structured_outputs=False,
+                supports_fine_tuning=False,
+                supports_distillation=False,
+                supports_predicted_outputs=False,
+                max_tokens=16384,
+                context_window=128000,
+            ),
+            patterns=[
+                "gpt-4o-audio-preview-{year:4d}-{month:2d}-{day:2d}",
+                "gpt-4o-audio-preview",
+            ],
+        ),
+        "gpt-4o-mini": SpecificModelConfig(
+            version="4.0",
+            variant="mini",
+            capabilities=ModelCapabilities(
+                supports_vision=True,
+                supports_streaming=True,
+                supports_function_calling=True,
+                supports_structured_outputs=True,
+                supports_fine_tuning=True,
+                supports_predicted_outputs=True,
+                max_tokens=16384,
+                context_window=128000,
+            ),
+            patterns=[
+                "gpt-4o-mini-{year:4d}-{month:2d}-{day:2d}",
+                "gpt-4o-mini",
+            ],
+        ),
+        "gpt-4o-mini-audio-preview": SpecificModelConfig(
+            version="4.0",
+            variant="mini-audio-preview",
+            capabilities=ModelCapabilities(
+                supports_vision=True,
+                supports_streaming=True,
+                supports_function_calling=True,
+                supports_structured_outputs=False,
+                supports_fine_tuning=False,
+                supports_distillation=False,
+                supports_predicted_outputs=False,
+                max_tokens=16384,
+                context_window=128000,
+            ),
+            patterns=[
+                "gpt-4o-mini-audio-preview-{year:4d}-{month:2d}-{day:2d}",
+                "gpt-4o-mini-audio-preview",
+            ],
+        ),
+        "gpt-4o-mini-realtime-preview": SpecificModelConfig(
+            version="4.0",
+            variant="mini-realtime-preview",
+            capabilities=ModelCapabilities(
+                supports_vision=True,
+                supports_streaming=False,
+                supports_function_calling=True,
+                supports_structured_outputs=False,
+                supports_fine_tuning=False,
+                supports_distillation=False,
+                supports_predicted_outputs=False,
+                max_tokens=4096,
+                context_window=16000,
+            ),
+            patterns=[
+                "gpt-4o-mini-realtime-preview-{year:4d}-{month:2d}-{day:2d}",
+                "gpt-4o-mini-realtime-preview",
+            ],
+        ),
+    },
+)

@@ -237,24 +237,29 @@ class TestModelVersion(unittest.TestCase):
         # 创建不同版本、型号和日期的模型
         gpt4_base_with_date = LLMeta("gpt-4-0125")  # base, 2024-01-25
         gpt4_base_no_date = LLMeta("gpt-4")  # base, no date
-        gpt4_turbo_with_date = LLMeta("gpt-4-turbo-2024-04-09")  # turbo, 2024-04-09
-        gpt4_turbo_no_date = LLMeta("gpt-4-turbo")  # turbo, no date
 
         # 验证型号优先级
         assert gpt4_base_with_date._variant_priority == (1,)
-        assert gpt4_turbo_with_date._variant_priority == (2,)
-
-        # 不同型号：turbo > base，无论日期如何
-        assert gpt4_base_with_date < gpt4_turbo_with_date
-        assert gpt4_base_no_date < gpt4_turbo_no_date
 
         # 同一型号：有日期 < 无日期（无日期指向最新）
         assert gpt4_base_with_date < gpt4_base_no_date
-        assert gpt4_turbo_with_date < gpt4_turbo_no_date
 
-        # 测试完整的比较链
-        # base(有日期) < base(无日期/最新) < turbo(有日期) < turbo(无日期/最新)
-        assert gpt4_base_with_date < gpt4_base_no_date < gpt4_turbo_with_date < gpt4_turbo_no_date
+        # 测试未配置的模型名称（GPT-4 Turbo 已下线，未在配置中）
+        # Test unconfigured model names (GPT-4 Turbo is offline and not in config)
+        gpt4_turbo_with_date = LLMeta("gpt-4-turbo-2024-04-09")
+        gpt4_turbo_no_date = LLMeta("gpt-4-turbo")
+
+        # 未匹配到配置的模型，variant、provider、family 等应为空
+        # Models not matched to config should have empty variant, provider, family, etc.
+        assert gpt4_turbo_with_date.variant == ""
+        assert gpt4_turbo_with_date._variant_priority == (0,)
+        assert gpt4_turbo_with_date.family == ModelFamily.UNKNOWN
+        assert gpt4_turbo_with_date.provider == Provider.UNKNOWN
+
+        assert gpt4_turbo_no_date.variant == ""
+        assert gpt4_turbo_no_date._variant_priority == (0,)
+        assert gpt4_turbo_no_date.family == ModelFamily.UNKNOWN
+        assert gpt4_turbo_no_date.provider == Provider.UNKNOWN
 
     def test_specific_model_capabilities(self) -> None:
         """测试子 SpecificModel 的 capabilities 覆盖 / Test specific model capabilities override"""

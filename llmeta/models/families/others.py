@@ -27,6 +27,7 @@ ERNIE = ModelFamilyConfig(
         "ernie-{version:d}-{variant}",
         "ernie-{variant}",
         "ernie",
+        "wenxin",  # 别名 / Alias
     ],
     capabilities=ModelCapabilities(
         supports_function_calling=True,

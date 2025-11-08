@@ -1,0 +1,59 @@
+# filename: openai_o4.py
+# @Time    : 2025/11/8 13:31
+# @Author  : JQQ
+# @Email   : jiaqia@qknode.com
+# @Software: PyCharm
+from llmeta.capabilities import ModelCapabilities
+from llmeta.models.base import ModelFamily
+from llmeta.models.config import ModelFamilyConfig, SpecificModelConfig
+from llmeta.provider import Provider
+
+# ============================================================================
+# O4 系列 / O4 Series
+# ============================================================================
+
+O4 = ModelFamilyConfig(
+    family=ModelFamily.O4,
+    provider=Provider.OPENAI,
+    version_default="4.0",
+    patterns=[
+        "o4-{variant}-{year:4d}-{month:2d}-{day:2d}",
+        "o4-{variant}",
+    ],
+    capabilities=ModelCapabilities(
+        supports_streaming=True,
+        supports_function_calling=True,
+        supports_structured_outputs=True,
+        supports_fine_tuning=True,
+    ),
+    specific_models={
+        "o4-mini": SpecificModelConfig(
+            version="4.0",
+            variant="mini",
+            capabilities=ModelCapabilities(
+                supports_streaming=True,
+                supports_function_calling=True,
+                supports_structured_outputs=True,
+                supports_fine_tuning=True,
+            ),
+            patterns=[
+                "o4-mini-{year:4d}-{month:2d}-{day:2d}",
+                "o4-mini",
+            ],
+        ),
+        "o4-mini-deep-research": SpecificModelConfig(
+            version="4.0",
+            variant="mini-deep-research",
+            capabilities=ModelCapabilities(
+                supports_streaming=True,
+                supports_function_calling=False,
+                supports_structured_outputs=False,
+                supports_fine_tuning=False,
+            ),
+            patterns=[
+                "o4-mini-deep-research-{year:4d}-{month:2d}-{day:2d}",
+                "o4-mini-deep-research",
+            ],
+        ),
+    },
+)
