@@ -24,6 +24,8 @@ QWEN = ModelFamilyConfig(
     patterns=[
         "qwen{version:d}-{variant:variant}-{year:4d}-{month:2d}-{day:2d}",
         "qwen{version:d}-{variant:variant}",
+        "qwen-{variant:variant}-{year:4d}-{month:2d}-{day:2d}",
+        "qwen-{variant:variant}",
     ],
     capabilities=ModelCapabilities(
         supports_function_calling=True,
@@ -72,10 +74,19 @@ QWEN = ModelFamilyConfig(
                 supports_structured_outputs=False,
                 supports_function_calling=False,
                 supports_vision=True,
+                supports_image_base64=True,
+                supported_image_mime_type=[
+                    "image/png",
+                    "image/jpeg",
+                    "image/webp",
+                ],
                 max_tokens=None,
                 context_window=None,
             ),
-            patterns=[],
+            patterns=[
+                "qwen-image-plus-{year:4d}-{month:2d}-{day:2d}",
+                "qwen-image-plus",
+            ],
         ),
         "qwen-image": SpecificModelConfig(
             version="1.0",
@@ -85,10 +96,19 @@ QWEN = ModelFamilyConfig(
                 supports_structured_outputs=False,
                 supports_function_calling=False,
                 supports_vision=True,
+                supports_image_base64=True,
+                supported_image_mime_type=[
+                    "image/png",
+                    "image/jpeg",
+                    "image/webp",
+                ],
                 max_tokens=None,
                 context_window=None,
             ),
-            patterns=[],
+            patterns=[
+                "qwen-image-{year:4d}-{month:2d}-{day:2d}",
+                "qwen-image",
+            ],
         ),
         "qwen3-vl-plus": SpecificModelConfig(
             version="3",

@@ -219,3 +219,43 @@ def test_qwen_image_general_pattern_intact() -> None:
     assert meta.capabilities.supports_function_calling is False
     assert meta.capabilities.supports_structured_outputs is False
     assert meta.capabilities.supports_streaming is False
+
+
+def test_qwen_image_plus_snapshot_specific_config() -> None:
+    config = get_specific_model_config("qwen-image-plus-2025-09-23")
+
+    assert config is not None
+    version, variant, capabilities = config
+    assert version == "1.0"
+    assert variant == "image-plus"
+    assert capabilities.supports_vision is True
+    assert capabilities.supports_function_calling is False
+
+
+def test_qwen_image_plus_snapshot_auto_register() -> None:
+    meta = LLMeta("qwen-image-plus-2025-09-23")
+
+    assert meta.family == ModelFamily.QWEN
+    assert meta.variant == "image-plus"
+    assert meta.release_date == date(2025, 9, 23)
+    assert meta.capabilities.supports_streaming is False
+
+
+def test_qwen_image_snapshot_specific_config() -> None:
+    config = get_specific_model_config("qwen-image-2025-09-23")
+
+    assert config is not None
+    version, variant, capabilities = config
+    assert version == "1.0"
+    assert variant == "image"
+    assert capabilities.supports_vision is True
+    assert capabilities.supports_function_calling is False
+
+
+def test_qwen_image_snapshot_auto_register() -> None:
+    meta = LLMeta("qwen-image-2025-09-23")
+
+    assert meta.family == ModelFamily.QWEN
+    assert meta.variant == "image"
+    assert meta.release_date == date(2025, 9, 23)
+    assert meta.capabilities.supports_streaming is False
