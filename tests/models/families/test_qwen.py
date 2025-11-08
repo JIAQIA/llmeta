@@ -31,6 +31,8 @@ def test_qwen3_vl_plus_specific_config() -> None:
     assert capabilities.supports_thinking is True
     assert capabilities.supports_vision is True
     assert capabilities.supports_video is True
+    assert capabilities.supports_structured_outputs is True
+    assert capabilities.supports_function_calling is True
     assert capabilities.context_window == 256000
 
 
@@ -42,6 +44,8 @@ def test_qwen3_vl_plus_auto_register() -> None:
     assert meta.variant == "vl-plus"
     assert meta.capabilities.context_window == 256000
     assert meta.capabilities.supports_video is True
+    assert meta.capabilities.supports_structured_outputs is True
+    assert meta.capabilities.supports_function_calling is True
 
 
 def test_qwen3_vl_plus_with_date_suffix() -> None:
@@ -53,6 +57,45 @@ def test_qwen3_vl_plus_with_date_suffix() -> None:
     assert meta.release_date.year == 2025
     assert meta.release_date.month == 9
     assert meta.release_date.day == 23
+    assert meta.capabilities.supports_structured_outputs is True
+    assert meta.capabilities.supports_function_calling is True
+
+
+def test_qwen3_vl_flash_specific_config() -> None:
+    config = get_specific_model_config("qwen3-vl-flash")
+
+    assert config is not None
+    version, variant, capabilities = config
+    assert version == "3"
+    assert variant == "vl-flash"
+    assert capabilities.supports_thinking is True
+    assert capabilities.supports_vision is True
+    assert capabilities.supports_video is True
+    assert capabilities.supports_structured_outputs is True
+    assert capabilities.supports_function_calling is True
+    assert capabilities.context_window == 256000
+
+
+def test_qwen3_vl_flash_auto_register() -> None:
+    meta = LLMeta("qwen3-vl-flash")
+
+    assert meta.family == ModelFamily.QWEN
+    assert meta.version == "3"
+    assert meta.variant == "vl-flash"
+    assert meta.capabilities.supports_structured_outputs is True
+    assert meta.capabilities.supports_function_calling is True
+    assert meta.capabilities.context_window == 256000
+
+
+def test_qwen3_vl_flash_with_date_suffix() -> None:
+    meta = LLMeta("qwen3-vl-flash-2025-10-15")
+
+    assert meta.family == ModelFamily.QWEN
+    assert meta.version == "3"
+    assert meta.variant == "vl-flash"
+    assert meta.release_date == date(2025, 10, 15)
+    assert meta.capabilities.supports_structured_outputs is True
+    assert meta.capabilities.supports_function_calling is True
 
 
 def test_qwen3_max_pattern_match() -> None:
