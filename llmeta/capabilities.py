@@ -31,6 +31,12 @@ class ModelCapabilities:
     supports_fine_tuning: bool = False  # 是否支持微调 / Whether fine-tuning is supported
     supports_distillation: bool = False  # 是否支持蒸馏 / Whether distillation is supported
     supports_predicted_outputs: bool = False  # 是否支持预测输出 / Whether predicted outputs are supported
+    supports_web_search: bool = False  # 是否支持联网搜索工具 / Whether web search tool is supported
+    supports_file_search: bool = False  # 是否支持文件检索 / Whether file search tool is supported
+    supports_image_generation: bool = False  # 是否支持图像生成工具 / Whether image generation tool is supported
+    supports_code_interpreter: bool = False  # 是否支持代码解释器 / Whether code interpreter tool is supported
+    supports_computer_use: bool = False  # 是否支持电脑远程操作 / Whether computer use tool is supported
+    supports_mcp: bool = False  # 是否支持 MCP / Whether MCP integration is supported
 
     # 通用限制 / General limitations
     max_tokens: int | None = None  # 最大token数 / Maximum number of tokens

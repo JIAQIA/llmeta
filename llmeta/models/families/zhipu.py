@@ -96,6 +96,75 @@ GLM_4V = ModelFamilyConfig(
 )
 
 # ============================================================================
+# GLM-4.5 系列（文本模型） / GLM-4.5 Series (Text Models)
+# ============================================================================
+
+GLM_45 = ModelFamilyConfig(
+    family=ModelFamily.GLM_45,
+    provider=Provider.ZHIPU,
+    version_default="4.5",
+    variant_priority_default=(3,),
+    patterns=[
+        "glm-4.5-{variant:variant}-{year:4d}-{month:2d}-{day:2d}",
+        "glm-4.5-{variant:variant}-{mmdd:4d}",
+        "glm-4.5-{variant:variant}",
+        "glm-4.5-{year:4d}-{month:2d}-{day:2d}",
+        "glm-4.5-{mmdd:4d}",
+        "glm-4.5",
+    ],
+    capabilities=ModelCapabilities(
+        supports_thinking=True,
+        supports_function_calling=True,
+        supports_structured_outputs=True,
+        supports_streaming=True,
+        max_tokens=96000,
+        context_window=128000,
+    ),
+    specific_models={
+        "glm-4.5-air": SpecificModelConfig(
+            version="4.5",
+            variant="air",
+            variant_priority=(1,),
+            patterns=[
+                "glm-4.5-air-{year:4d}-{month:2d}-{day:2d}",
+                "glm-4.5-air-{mmdd:4d}",
+                "glm-4.5-air",
+            ],
+        ),
+        "glm-4.5-airx": SpecificModelConfig(
+            version="4.5",
+            variant="airx",
+            variant_priority=(2,),
+            patterns=[
+                "glm-4.5-airx-{year:4d}-{month:2d}-{day:2d}",
+                "glm-4.5-airx-{mmdd:4d}",
+                "glm-4.5-airx",
+            ],
+        ),
+        "glm-4.5-x": SpecificModelConfig(
+            version="4.5",
+            variant="x",
+            variant_priority=(4,),
+            patterns=[
+                "glm-4.5-x-{year:4d}-{month:2d}-{day:2d}",
+                "glm-4.5-x-{mmdd:4d}",
+                "glm-4.5-x",
+            ],
+        ),
+        "glm-4.5-flash": SpecificModelConfig(
+            version="4.5",
+            variant="flash",
+            variant_priority=(0,),
+            patterns=[
+                "glm-4.5-flash-{year:4d}-{month:2d}-{day:2d}",
+                "glm-4.5-flash-{mmdd:4d}",
+                "glm-4.5-flash",
+            ],
+        ),
+    },
+)
+
+# ============================================================================
 # GLM-4.5V 系列 / GLM-4.5V Series
 # ============================================================================
 

@@ -30,18 +30,28 @@ GPT_4_1 = ModelFamilyConfig(
         supports_structured_outputs=True,
         supports_fine_tuning=True,
         supports_distillation=True,
+        supports_web_search=True,
+        supports_file_search=True,
+        supports_image_generation=True,
+        supports_code_interpreter=True,
+        supports_mcp=True,
+        max_tokens=32768,
+        context_window=1_047_576,
     ),
     specific_models={
         "gpt-4.1-mini": SpecificModelConfig(
             version="4.1",
             variant="mini",
-            variant_priority=(0,),  # mini 的优先级 / mini priority
+            variant_priority=(0,),
             capabilities=ModelCapabilities(
                 supports_function_calling=True,
                 supports_streaming=True,
                 supports_structured_outputs=True,
                 supports_fine_tuning=True,
+                supports_distillation=False,
                 supports_predicted_outputs=True,
+                max_tokens=32768,
+                context_window=1_047_576,
             ),
             patterns=[
                 "gpt-4.1-mini-{year:4d}-{month:2d}-{day:2d}",
@@ -51,13 +61,16 @@ GPT_4_1 = ModelFamilyConfig(
         "gpt-4.1-nano": SpecificModelConfig(
             version="4.1",
             variant="nano",
-            variant_priority=(0,),  # nano 的优先级 (< mini) / nano priority (< mini)
+            variant_priority=(0,),  # nano 的优先级 (< mini) / nano priority
             capabilities=ModelCapabilities(
                 supports_function_calling=True,
                 supports_streaming=True,
                 supports_structured_outputs=True,
                 supports_fine_tuning=True,
+                supports_distillation=False,
                 supports_predicted_outputs=True,
+                max_tokens=32768,
+                context_window=1_047_576,
             ),
             patterns=[
                 "gpt-4.1-nano-{year:4d}-{month:2d}-{day:2d}",

@@ -178,6 +178,19 @@ MODEL_PATTERNS: list[ModelPattern] = [
         ],
     ),
     ModelPattern(
+        family=ModelFamily.GLM_45,
+        provider=Provider.ZHIPU,
+        version_default="4.5",
+        patterns=[
+            "glm-4.5-{variant:variant}-{year:4d}-{month:2d}-{day:2d}",
+            "glm-4.5-{variant:variant}-{mmdd:4d}",
+            "glm-4.5-{variant:variant}",
+            "glm-4.5-{year:4d}-{month:2d}-{day:2d}",
+            "glm-4.5-{mmdd:4d}",
+            "glm-4.5",
+        ],
+    ),
+    ModelPattern(
         family=ModelFamily.GLM_45V,
         provider=Provider.ZHIPU,
         version_default="4.5",

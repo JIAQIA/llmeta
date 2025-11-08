@@ -49,6 +49,7 @@ class ModelFamily(str, Enum, metaclass=DynamicEnumMeta):
     # 智谱 AI 家族 / Zhipu AI family
     GLM_4 = "glm-4"
     GLM_4V = "glm-4v"
+    GLM_45 = "glm-4.5"
     GLM_45V = "glm-4.5v"
     GLM_46 = "glm-4.6"
     GLM_3 = "glm-3"
