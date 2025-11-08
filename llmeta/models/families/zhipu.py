@@ -96,6 +96,34 @@ GLM_4V = ModelFamilyConfig(
 )
 
 # ============================================================================
+# GLM-4.5V 系列 / GLM-4.5V Series
+# ============================================================================
+
+GLM_45V = ModelFamilyConfig(
+    family=ModelFamily.GLM_45V,
+    provider=Provider.ZHIPU,
+    version_default="4.5",
+    variant_priority_default=(1,),
+    patterns=[
+        "glm-4.5v-{variant:variant}-{year:4d}-{month:2d}-{day:2d}",
+        "glm-4.5v-{variant:variant}-{mmdd:4d}",
+        "glm-4.5v-{variant:variant}",
+        "glm-4.5v-{year:4d}-{month:2d}-{day:2d}",
+        "glm-4.5v-{mmdd:4d}",
+        "glm-4.5v",
+    ],
+    capabilities=ModelCapabilities(
+        supports_thinking=True,
+        supports_vision=True,
+        supports_video=True,
+        supports_pdf=True,
+        supports_streaming=True,
+        max_tokens=8192,
+        context_window=64000,
+    ),
+)
+
+# ============================================================================
 # GLM-4.6 系列 / GLM-4.6 Series
 # ============================================================================
 
