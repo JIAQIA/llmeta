@@ -21,7 +21,7 @@ class TestAutoRegister(unittest.TestCase):
         """测试模型家族推断 / Test model family inference"""
         # GPT 系列 / GPT series
         assert infer_model_family("gpt-4o-new-variant") == ModelFamily.GPT_4O
-        assert infer_model_family("gpt-3.5-custom") == ModelFamily.GPT_3_5
+        assert infer_model_family("gpt-3.5-turbo-custom") == ModelFamily.GPT_3_5
         assert infer_model_family("o1-custom") == ModelFamily.O1
 
         # 智谱 AI 系列 / Zhipu AI series

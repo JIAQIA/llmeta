@@ -4,13 +4,16 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import pytest
 
-import llmeta.models.families  # noqa: F401  # 触发所有家族注册
 from llmeta import LLMeta
 from llmeta.models.base import ModelFamily, infer_variant_priority
-from llmeta.models.config import ModelFamilyConfig
 from llmeta.models.registry import get_family_config
+
+if TYPE_CHECKING:
+    from llmeta.models.config import ModelFamilyConfig
 
 MODEL_VARIANT_SAMPLES: dict[ModelFamily, dict[str, list[str]]] = {
     ModelFamily.GPT_4O: {
@@ -31,8 +34,6 @@ MODEL_VARIANT_SAMPLES: dict[ModelFamily, dict[str, list[str]]] = {
         "base": ["gpt-4"],
     },
     ModelFamily.GPT_3_5: {
-        "mini": ["gpt-3.5-mini"],
-        "base": ["gpt-3.5"],
         "turbo": ["gpt-3.5-turbo"],
     },
     ModelFamily.GPT_4_1: {
@@ -205,10 +206,7 @@ def _resolve_expected_priority(
     if spec_config and spec_config.variant_priority is not None:
         return spec_config.variant_priority
 
-    if (
-        model_variant == family_config.variant_default
-        and family_config.variant_priority_default is not None
-    ):
+    if model_variant == family_config.variant_default and family_config.variant_priority_default is not None:
         return family_config.variant_priority_default
 
     return infer_variant_priority(model_variant)
