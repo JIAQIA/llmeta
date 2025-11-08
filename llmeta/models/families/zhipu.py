@@ -107,6 +107,7 @@ GLM_4 = ModelFamilyConfig(
     patterns=[
         "glm-4-{variant:variant}-{year:4d}-{month:2d}-{day:2d}",
         "glm-4-{variant:variant}",
+        "glm-4-{mmdd:4d}",
         "glm-4",
         "chatglm",  # 别名 / Alias
         "cogview",  # 别名 / Alias

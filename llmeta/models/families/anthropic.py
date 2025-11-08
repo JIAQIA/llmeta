@@ -12,9 +12,9 @@ from llmeta.models.base import ModelFamily
 from llmeta.models.config import ModelFamilyConfig, SpecificModelConfig
 from llmeta.provider import Provider
 
-# ============================================================================
+# ==========================================================================
 # Claude 系列 / Claude Series
-# ============================================================================
+# ==========================================================================
 
 CLAUDE = ModelFamilyConfig(
     family=ModelFamily.CLAUDE,
@@ -32,6 +32,7 @@ CLAUDE = ModelFamilyConfig(
         "claude-{major:d}-{minor:d}-{variant:variant}",
         "claude-{major:d}-{variant:variant}-{snapshot:8d}",
         "claude-{major:d}-{variant:variant}",
+        "claude-{major:d}",
         "claude-{variant:variant}",
         "claude",
     ],
