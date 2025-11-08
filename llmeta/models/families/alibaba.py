@@ -22,11 +22,8 @@ QWEN = ModelFamilyConfig(
     version_default="1.0",
     variant_priority_default=(1,),  # base 的优先级 / base priority
     patterns=[
+        "qwen{version:d}-{variant:variant}-{year:4d}-{month:2d}-{day:2d}",
         "qwen{version:d}-{variant:variant}",
-        "qwen-{version:d}-{variant:variant}",
-        "qwen-{variant:variant}",
-        "qwen",
-        "tongyi",  # 别名 / Alias
     ],
     capabilities=ModelCapabilities(
         supports_function_calling=True,
@@ -78,9 +75,7 @@ QWEN = ModelFamilyConfig(
                 max_tokens=None,
                 context_window=None,
             ),
-            patterns=[
-                "qwen-image-plus",
-            ],
+            patterns=[],
         ),
         "qwen-image": SpecificModelConfig(
             version="1.0",
@@ -93,9 +88,7 @@ QWEN = ModelFamilyConfig(
                 max_tokens=None,
                 context_window=None,
             ),
-            patterns=[
-                "qwen-image",
-            ],
+            patterns=[],
         ),
         "qwen3-vl-plus": SpecificModelConfig(
             version="3",

@@ -35,8 +35,8 @@ class TestProvider(unittest.TestCase):
 
     def test_from_model_name_alibaba(self) -> None:
         """测试阿里云模型识别 / Test Alibaba model recognition"""
-        assert Provider.from_model_name("qwen-turbo") == Provider.ALIBABA
-        assert Provider.from_model_name("tongyi") == Provider.ALIBABA
+        assert Provider.from_model_name("qwen3-turbo") == Provider.ALIBABA
+        assert Provider.from_model_name("qwen3-turbo-2025-09-23") == Provider.ALIBABA
 
     def test_from_model_name_baidu(self) -> None:
         """测试百度模型识别 / Test Baidu model recognition"""

@@ -87,10 +87,11 @@ def test_qwen3_max_auto_register() -> None:
 
 
 def test_qwen3_max_general_pattern_isolated() -> None:
-    meta = LLMeta("qwen-max")
+    meta = LLMeta("qwen3-base")
 
     assert meta.family == ModelFamily.QWEN
-    assert meta.variant == "max"
+    assert meta.variant == "base"
+    assert meta.capabilities.supports_function_calling is True
     assert meta.capabilities.context_window == 32000
 
 
@@ -127,11 +128,11 @@ def test_qwen3_max_preview_auto_register() -> None:
 
 
 def test_qwen3_max_preview_general_pattern_isolated() -> None:
-    meta = LLMeta("qwen-max-preview")
+    meta = LLMeta("qwen3-preview")
 
     assert meta.family == ModelFamily.QWEN
-    assert meta.variant == "max-preview"
-    assert meta.capabilities.supports_thinking is False
+    assert meta.variant == "preview"
+    assert meta.capabilities.supports_function_calling is True
 
 
 def test_qwen3_max_preview_with_date_suffix() -> None:

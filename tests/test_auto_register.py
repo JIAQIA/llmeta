@@ -30,7 +30,7 @@ class TestAutoRegister(unittest.TestCase):
         assert infer_model_family("glm-3-custom") == ModelFamily.GLM_3
 
         # 其他厂商 / Other providers
-        assert infer_model_family("qwen-custom") == ModelFamily.QWEN
+        assert infer_model_family("qwen3-custom") == ModelFamily.QWEN
         assert infer_model_family("deepseek-custom") == ModelFamily.DEEPSEEK
         assert infer_model_family("claude-sonnet-4-5") == ModelFamily.CLAUDE
 
@@ -106,7 +106,7 @@ class TestAutoRegister(unittest.TestCase):
 
     def test_auto_register_qwen_variant(self) -> None:
         """测试自动注册 Qwen 新型号 / Test auto-register Qwen new variant"""
-        model = LLMeta("qwen-turbo-latest")
+        model = LLMeta("qwen3-turbo")
 
         assert model.family == ModelFamily.QWEN
         assert model.provider == Provider.ALIBABA
