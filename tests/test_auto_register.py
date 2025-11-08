@@ -32,7 +32,7 @@ class TestAutoRegister(unittest.TestCase):
         # 其他厂商 / Other providers
         assert infer_model_family("qwen-custom") == ModelFamily.QWEN
         assert infer_model_family("deepseek-custom") == ModelFamily.DEEPSEEK
-        assert infer_model_family("claude-custom") == ModelFamily.CLAUDE
+        assert infer_model_family("claude-sonnet-4-5") == ModelFamily.CLAUDE
 
         # 未知模型 / Unknown model
         assert infer_model_family("unknown-model-xyz") == ModelFamily.UNKNOWN

@@ -32,9 +32,6 @@ CLAUDE = ModelFamilyConfig(
         "claude-{major:d}-{minor:d}-{variant:variant}",
         "claude-{major:d}-{variant:variant}-{snapshot:8d}",
         "claude-{major:d}-{variant:variant}",
-        "claude-{major:d}",
-        "claude-{variant:variant}",
-        "claude",
     ],
     capabilities=ModelCapabilities(
         supports_vision=True,

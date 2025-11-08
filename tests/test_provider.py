@@ -24,8 +24,8 @@ class TestProvider(unittest.TestCase):
 
     def test_from_model_name_anthropic(self) -> None:
         """测试 Anthropic 模型识别 / Test Anthropic model recognition"""
-        assert Provider.from_model_name("claude-3") == Provider.ANTHROPIC
-        assert Provider.from_model_name("claude-2") == Provider.ANTHROPIC
+        assert Provider.from_model_name("claude-sonnet-4-5") == Provider.ANTHROPIC
+        assert Provider.from_model_name("claude-opus-4-1") == Provider.ANTHROPIC
 
     def test_from_model_name_zhipu(self) -> None:
         """测试智谱 AI 模型识别 / Test Zhipu AI model recognition"""
