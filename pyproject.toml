@@ -19,7 +19,7 @@ dev = [
     "ruff>=0.12.9,<0.13.0",
     "mypy>=1.17.1,<2.0.0",
     "poethepoet>=0.37.0,<0.38.0",
-    "bump-my-version>=0.30.0,<1.0.0"
+    "bump-my-version>=0.30.0",
 ]
 test = [
     "polyfactory>=2.22.2,<3.0.0",

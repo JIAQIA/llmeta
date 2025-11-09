@@ -304,7 +304,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bump-my-version", marker = "extra == 'dev'", specifier = ">=0.30.0,<1.0.0" },
+    { name = "bump-my-version", marker = "extra == 'dev'", specifier = ">=0.30.0" },
     { name = "inline-snapshot", marker = "extra == 'test'", specifier = ">=0.27.2,<0.28.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.17.1,<2.0.0" },
     { name = "parse", specifier = ">=1.20.2" },
