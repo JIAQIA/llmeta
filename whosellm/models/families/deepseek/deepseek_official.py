@@ -20,8 +20,10 @@ DEEPSEEK = ModelFamilyConfig(
     variant_default="base",
     variant_priority_default=(1,),
     patterns=[
-        "deepseek-{variant:variant}",
-        "deepseek",
+        "deepseek-chat-{suffix}",
+        "deepseek-chat",
+        "deepseek-reasoner-{suffix}",
+        "deepseek-reasoner",
     ],
     capabilities=ModelCapabilities(
         supports_function_calling=True,

@@ -379,7 +379,7 @@ def auto_register_model(
     from whosellm.models.registry import match_model_pattern
 
     # 使用模式匹配解析模型名称 / Use pattern matching to parse model name
-    matched = match_model_pattern(model_name)
+    matched = match_model_pattern(model_name, specified_provider)
 
     if not matched:
         # 无法匹配任何模式 / Cannot match any pattern
@@ -415,7 +415,7 @@ def auto_register_model(
     else:
         from whosellm.models.registry import get_default_capabilities
 
-        model_capabilities = get_default_capabilities(family)
+        model_capabilities = get_default_capabilities(family, provider)
 
     # 获取或推断型号优先级 / Get or infer variant priority
     # 优先使用配置中的 variant_priority，如果没有则推断

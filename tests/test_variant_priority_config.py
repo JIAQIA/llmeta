@@ -175,15 +175,8 @@ MODEL_VARIANT_SAMPLES: dict[ModelFamily, dict[str, list[str]]] = {
         "omni": ["moonshot-omni"],
     },
     ModelFamily.DEEPSEEK: {
-        "mini": ["deepseek-mini"],
-        "flash": ["deepseek-flash"],
-        "preview": ["deepseek-preview"],
-        "base": ["deepseek"],
-        "turbo": ["deepseek-turbo"],
-        "plus": ["deepseek-plus"],
-        "pro": ["deepseek-pro"],
-        "ultra": ["deepseek-ultra"],
-        "omni": ["deepseek-omni"],
+        "chat": ["deepseek-chat", "deepseek-chat-beta", "deepseek-chat-v3.2-exp"],
+        "reasoner": ["deepseek-reasoner"],
     },
     ModelFamily.ABAB: {
         "mini": ["abab-mini"],
