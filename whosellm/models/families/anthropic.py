@@ -43,8 +43,8 @@ CLAUDE = ModelFamilyConfig(
     ),
     specific_models={
         "claude-sonnet-4-5": SpecificModelConfig(
-            version="4.5",
-            variant="sonnet",
+            version_default="4.5",
+            variant_default="sonnet",
             variant_priority=(3,),
             capabilities=ModelCapabilities(
                 supports_vision=True,
@@ -61,8 +61,8 @@ CLAUDE = ModelFamilyConfig(
             ],
         ),
         "claude-haiku-4-5": SpecificModelConfig(
-            version="4.5",
-            variant="haiku",
+            version_default="4.5",
+            variant_default="haiku",
             variant_priority=(0,),
             capabilities=ModelCapabilities(
                 supports_vision=True,
@@ -79,8 +79,8 @@ CLAUDE = ModelFamilyConfig(
             ],
         ),
         "claude-opus-4-1": SpecificModelConfig(
-            version="4.1",
-            variant="opus",
+            version_default="4.1",
+            variant_default="opus",
             variant_priority=(5,),
             capabilities=ModelCapabilities(
                 supports_vision=True,
@@ -97,8 +97,8 @@ CLAUDE = ModelFamilyConfig(
             ],
         ),
         "claude-sonnet-4-0": SpecificModelConfig(
-            version="4.0",
-            variant="sonnet",
+            version_default="4.0",
+            variant_default="sonnet",
             variant_priority=(3,),
             capabilities=ModelCapabilities(
                 supports_vision=True,
@@ -115,8 +115,8 @@ CLAUDE = ModelFamilyConfig(
             ],
         ),
         "claude-3-7-sonnet": SpecificModelConfig(
-            version="3.7",
-            variant="sonnet",
+            version_default="3.7",
+            variant_default="sonnet",
             variant_priority=(3,),
             capabilities=ModelCapabilities(
                 supports_vision=True,
@@ -133,8 +133,8 @@ CLAUDE = ModelFamilyConfig(
             ],
         ),
         "claude-opus-4-0": SpecificModelConfig(
-            version="4.0",
-            variant="opus",
+            version_default="4.0",
+            variant_default="opus",
             variant_priority=(5,),
             capabilities=ModelCapabilities(
                 supports_vision=True,
@@ -151,8 +151,8 @@ CLAUDE = ModelFamilyConfig(
             ],
         ),
         "claude-3-5-haiku": SpecificModelConfig(
-            version="3.5",
-            variant="haiku",
+            version_default="3.5",
+            variant_default="haiku",
             variant_priority=(0,),
             capabilities=ModelCapabilities(
                 supports_vision=True,
@@ -169,8 +169,8 @@ CLAUDE = ModelFamilyConfig(
             ],
         ),
         "claude-3-haiku": SpecificModelConfig(
-            version="3.0",
-            variant="haiku",
+            version_default="3.0",
+            variant_default="haiku",
             variant_priority=(0,),
             capabilities=ModelCapabilities(
                 supports_vision=True,

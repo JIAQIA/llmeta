@@ -34,8 +34,8 @@ GPT_5 = ModelFamilyConfig(
     ),
     specific_models={
         "gpt-5-mini": SpecificModelConfig(
-            version="5.0",
-            variant="mini",
+            version_default="5.0",
+            variant_default="mini",
             variant_priority=(0,),  # mini 的优先级 / mini priority
             capabilities=ModelCapabilities(
                 supports_function_calling=True,
@@ -52,8 +52,8 @@ GPT_5 = ModelFamilyConfig(
             ],
         ),
         "gpt-5-nano": SpecificModelConfig(
-            version="5.0",
-            variant="nano",
+            version_default="5.0",
+            variant_default="nano",
             variant_priority=(0,),  # nano 的优先级 / nano priority
             capabilities=ModelCapabilities(
                 supports_function_calling=True,
@@ -70,8 +70,8 @@ GPT_5 = ModelFamilyConfig(
             ],
         ),
         "gpt-5-pro": SpecificModelConfig(
-            version="5.0",
-            variant="pro",
+            version_default="5.0",
+            variant_default="pro",
             variant_priority=(4,),  # pro 的优先级 / pro priority
             capabilities=ModelCapabilities(
                 supports_function_calling=True,

@@ -144,8 +144,8 @@ def match_model_pattern(model_name: str, provider: Provider | None = None) -> di
         if model_lower in config.specific_models:
             spec_config = config.specific_models[model_lower]
             return {
-                "version": spec_config.version,
-                "variant": spec_config.variant,
+                "version": spec_config.version_default,
+                "variant": spec_config.variant_default,
                 "family": config.family,
                 "provider": config.provider,
                 "capabilities": spec_config.capabilities,
@@ -166,10 +166,17 @@ def match_model_pattern(model_name: str, provider: Provider | None = None) -> di
                     # 转换为字典并添加默认值 / Convert to dict and add defaults
                     matched = dict(result.named)
                     if not matched.get("version"):
-                        matched["version"] = spec_config.version
+                        matched["version"] = spec_config.version_default
                     matched["family"] = config.family
                     matched["provider"] = config.provider
-                    matched["variant"] = spec_config.variant
+                    if not matched.get("variant"):
+                        matched["variant"] = spec_config.variant_default
+                        # 只有当使用默认 variant 时，才使用 variant_priority_default
+                        matched["variant_priority"] = spec_config.variant_priority
+                    else:
+                        # 如果从 pattern 提取到了 variant，不设置 variant_priority
+                        # 让后续逻辑根据 variant 推断
+                        matched["variant_priority"] = None
                     matched["capabilities"] = spec_config.capabilities
                     matched["variant_priority"] = spec_config.variant_priority
                     # 标记这是从 specific_model 匹配的 / Mark this as matched from specific_model
@@ -266,7 +273,7 @@ def get_specific_model_config(model_name: str) -> tuple[str, str, ModelCapabilit
     for config in _FAMILY_CONFIGS.values():
         if model_lower in config.specific_models:
             spec_config = config.specific_models[model_lower]
-            return spec_config.version, spec_config.variant, spec_config.capabilities
+            return spec_config.version_default, spec_config.variant_default, spec_config.capabilities
 
     # 方式2：通过子 patterns 匹配 / Method 2: Match by sub-patterns
     for config in _FAMILY_CONFIGS.values():
@@ -277,7 +284,7 @@ def get_specific_model_config(model_name: str) -> tuple[str, str, ModelCapabilit
             for pattern in spec_config.patterns:
                 result = parse.parse(pattern, model_lower)
                 if result:
-                    return spec_config.version, spec_config.variant, spec_config.capabilities
+                    return spec_config.version_default, spec_config.variant_default, spec_config.capabilities
 
     return None
 

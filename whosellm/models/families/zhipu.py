@@ -68,8 +68,8 @@ GLM_VISION = ModelFamilyConfig(
     specific_models={
         # GLM-4V 系列特定模型
         "glm-4v-plus-0111": SpecificModelConfig(
-            version="4.0",
-            variant="vision-plus",
+            version_default="4.0",
+            variant_default="vision-plus",
             variant_priority=(3,),  # plus 的优先级 / plus priority
             capabilities=ModelCapabilities(
                 supports_vision=True,
@@ -88,8 +88,8 @@ GLM_VISION = ModelFamilyConfig(
             ],
         ),
         "glm-4v-plus": SpecificModelConfig(
-            version="4.0",
-            variant="vision-plus",
+            version_default="4.0",
+            variant_default="vision-plus",
             variant_priority=(3,),  # plus 的优先级 / plus priority
             capabilities=ModelCapabilities(
                 supports_vision=True,
@@ -109,8 +109,8 @@ GLM_VISION = ModelFamilyConfig(
             ],
         ),
         "glm-4v-flash": SpecificModelConfig(
-            version="4.0",
-            variant="vision-flash",
+            version_default="4.0",
+            variant_default="vision-flash",
             variant_priority=(0,),  # flash 的优先级 / flash priority
             capabilities=ModelCapabilities(
                 supports_vision=True,
@@ -123,8 +123,8 @@ GLM_VISION = ModelFamilyConfig(
             ),
         ),
         "glm-4v": SpecificModelConfig(
-            version="4.0",
-            variant="base",
+            version_default="4.0",
+            variant_default="base",
             variant_priority=(1,),
             capabilities=ModelCapabilities(
                 supports_vision=True,
@@ -171,8 +171,8 @@ GLM_TEXT = ModelFamilyConfig(
     specific_models={
         # GLM-4.6 系列特定模型
         "glm-4.6": SpecificModelConfig(
-            version="4.6",
-            variant="base",
+            version_default="4.6",
+            variant_default="base",
             variant_priority=(3,),
             capabilities=ModelCapabilities(
                 supports_thinking=True,
@@ -185,8 +185,8 @@ GLM_TEXT = ModelFamilyConfig(
         ),
         # GLM-4.5 系列特定模型
         "glm-4.5": SpecificModelConfig(
-            version="4.5",
-            variant="base",
+            version_default="4.5",
+            variant_default="base",
             variant_priority=(3,),
             capabilities=ModelCapabilities(
                 supports_thinking=True,
@@ -198,8 +198,8 @@ GLM_TEXT = ModelFamilyConfig(
             ),
         ),
         "glm-4.5-air": SpecificModelConfig(
-            version="4.5",
-            variant="air",
+            version_default="4.5",
+            variant_default="air",
             variant_priority=(1,),
             patterns=[
                 "glm-4.5-air-{year:4d}-{month:2d}-{day:2d}",
@@ -208,8 +208,8 @@ GLM_TEXT = ModelFamilyConfig(
             ],
         ),
         "glm-4.5-airx": SpecificModelConfig(
-            version="4.5",
-            variant="airx",
+            version_default="4.5",
+            variant_default="airx",
             variant_priority=(2,),
             patterns=[
                 "glm-4.5-airx-{year:4d}-{month:2d}-{day:2d}",
@@ -218,8 +218,8 @@ GLM_TEXT = ModelFamilyConfig(
             ],
         ),
         "glm-4.5-x": SpecificModelConfig(
-            version="4.5",
-            variant="x",
+            version_default="4.5",
+            variant_default="x",
             variant_priority=(4,),
             patterns=[
                 "glm-4.5-x-{year:4d}-{month:2d}-{day:2d}",
@@ -228,8 +228,8 @@ GLM_TEXT = ModelFamilyConfig(
             ],
         ),
         "glm-4.5-flash": SpecificModelConfig(
-            version="4.5",
-            variant="flash",
+            version_default="4.5",
+            variant_default="flash",
             variant_priority=(0,),
             patterns=[
                 "glm-4.5-flash-{year:4d}-{month:2d}-{day:2d}",
@@ -239,8 +239,8 @@ GLM_TEXT = ModelFamilyConfig(
         ),
         # GLM-4 系列特定模型（需要特殊能力配置的）
         "glm-4": SpecificModelConfig(
-            version="4.0",
-            variant="base",
+            version_default="4.0",
+            variant_default="base",
             variant_priority=(1,),
             capabilities=ModelCapabilities(
                 supports_function_calling=True,

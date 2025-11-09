@@ -36,8 +36,8 @@ QWEN = ModelFamilyConfig(
     ),
     specific_models={
         "qwen3-max": SpecificModelConfig(
-            version="3",
-            variant="max",
+            version_default="3",
+            variant_default="max",
             capabilities=ModelCapabilities(
                 supports_function_calling=True,
                 supports_streaming=True,
@@ -51,8 +51,8 @@ QWEN = ModelFamilyConfig(
             ],
         ),
         "qwen3-max-preview": SpecificModelConfig(
-            version="3",
-            variant="max-preview",
+            version_default="3",
+            variant_default="max-preview",
             capabilities=ModelCapabilities(
                 supports_thinking=True,
                 supports_function_calling=True,
@@ -67,8 +67,8 @@ QWEN = ModelFamilyConfig(
             ],
         ),
         "qwen3-coder-plus": SpecificModelConfig(
-            version="3",
-            variant="coder-plus",
+            version_default="3",
+            variant_default="coder-plus",
             capabilities=ModelCapabilities(
                 supports_function_calling=True,
                 supports_structured_outputs=True,
@@ -83,8 +83,8 @@ QWEN = ModelFamilyConfig(
             ],
         ),
         "qwen-image-plus": SpecificModelConfig(
-            version="1.0",
-            variant="image-plus",
+            version_default="1.0",
+            variant_default="image-plus",
             capabilities=ModelCapabilities(
                 supports_streaming=False,
                 supports_structured_outputs=False,
@@ -105,8 +105,8 @@ QWEN = ModelFamilyConfig(
             ],
         ),
         "qwen-image": SpecificModelConfig(
-            version="1.0",
-            variant="image",
+            version_default="1.0",
+            variant_default="image",
             capabilities=ModelCapabilities(
                 supports_streaming=False,
                 supports_structured_outputs=False,
@@ -127,8 +127,8 @@ QWEN = ModelFamilyConfig(
             ],
         ),
         "qwen3-vl-plus": SpecificModelConfig(
-            version="3",
-            variant="vl-plus",
+            version_default="3",
+            variant_default="vl-plus",
             capabilities=ModelCapabilities(
                 supports_thinking=True,
                 supports_vision=True,
@@ -145,8 +145,8 @@ QWEN = ModelFamilyConfig(
             ],
         ),
         "qwen3-vl-235b-a22b-thinking": SpecificModelConfig(
-            version="3",
-            variant="vl-235b-a22b-thinking",
+            version_default="3",
+            variant_default="vl-235b-a22b-thinking",
             capabilities=ModelCapabilities(
                 supports_thinking=True,
                 supports_vision=True,
@@ -163,8 +163,8 @@ QWEN = ModelFamilyConfig(
             ],
         ),
         "qwen3-vl-32b-thinking": SpecificModelConfig(
-            version="3",
-            variant="vl-32b-thinking",
+            version_default="3",
+            variant_default="vl-32b-thinking",
             capabilities=ModelCapabilities(
                 supports_thinking=True,
                 supports_vision=True,
@@ -181,8 +181,8 @@ QWEN = ModelFamilyConfig(
             ],
         ),
         "qwen3-vl-32b-instruct": SpecificModelConfig(
-            version="3",
-            variant="vl-32b-instruct",
+            version_default="3",
+            variant_default="vl-32b-instruct",
             capabilities=ModelCapabilities(
                 supports_vision=True,
                 supports_video=True,
@@ -198,8 +198,8 @@ QWEN = ModelFamilyConfig(
             ],
         ),
         "qwen3-vl-flash": SpecificModelConfig(
-            version="3",
-            variant="vl-flash",
+            version_default="3",
+            variant_default="vl-flash",
             capabilities=ModelCapabilities(
                 supports_thinking=True,
                 supports_vision=True,
@@ -216,8 +216,8 @@ QWEN = ModelFamilyConfig(
             ],
         ),
         "qwen3-vl-30b-a3b-instruct": SpecificModelConfig(
-            version="3",
-            variant="vl-30b-a3b-instruct",
+            version_default="3",
+            variant_default="vl-30b-a3b-instruct",
             capabilities=ModelCapabilities(
                 supports_vision=True,
                 supports_video=True,
@@ -233,8 +233,8 @@ QWEN = ModelFamilyConfig(
             ],
         ),
         "qwen3-vl-8b-thinking": SpecificModelConfig(
-            version="3",
-            variant="vl-8b-thinking",
+            version_default="3",
+            variant_default="vl-8b-thinking",
             capabilities=ModelCapabilities(
                 supports_thinking=True,
                 supports_vision=True,
@@ -251,8 +251,8 @@ QWEN = ModelFamilyConfig(
             ],
         ),
         "qwen3-vl-8b-instruct": SpecificModelConfig(
-            version="3",
-            variant="vl-8b-instruct",
+            version_default="3",
+            variant_default="vl-8b-instruct",
             capabilities=ModelCapabilities(
                 supports_vision=True,
                 supports_video=True,

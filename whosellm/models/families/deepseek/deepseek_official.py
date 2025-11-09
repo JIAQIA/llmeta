@@ -33,8 +33,8 @@ DEEPSEEK = ModelFamilyConfig(
     ),
     specific_models={
         "deepseek-chat": SpecificModelConfig(
-            version="1.0",
-            variant="chat",
+            version_default="1.0",
+            variant_default="chat",
             capabilities=ModelCapabilities(
                 supports_function_calling=True,
                 supports_streaming=True,
@@ -48,8 +48,8 @@ DEEPSEEK = ModelFamilyConfig(
             ],
         ),
         "deepseek-reasoner": SpecificModelConfig(
-            version="1.0",
-            variant="reasoner",
+            version_default="1.0",
+            variant_default="reasoner",
             capabilities=ModelCapabilities(
                 supports_thinking=True,
                 supports_streaming=True,

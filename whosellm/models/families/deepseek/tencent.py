@@ -33,8 +33,8 @@ DEEPSEEK_TENCENT = ModelFamilyConfig(
     specific_models={
         # DeepSeek-V3-0324
         "deepseek-v3-0324": SpecificModelConfig(
-            version="v3-0324",
-            variant="v3-0324",
+            version_default="v3-0324",
+            variant_default="v3-0324",
             capabilities=ModelCapabilities(
                 supports_function_calling=True,
                 supports_streaming=True,
@@ -48,8 +48,8 @@ DEEPSEEK_TENCENT = ModelFamilyConfig(
         ),
         # DeepSeek-V3
         "deepseek-v3": SpecificModelConfig(
-            version="v3",
-            variant="v3",
+            version_default="v3",
+            variant_default="v3",
             capabilities=ModelCapabilities(
                 supports_function_calling=True,
                 supports_streaming=True,
@@ -63,8 +63,8 @@ DEEPSEEK_TENCENT = ModelFamilyConfig(
         ),
         # DeepSeek-R1
         "deepseek-r1": SpecificModelConfig(
-            version="r1",
-            variant="r1",
+            version_default="r1",
+            variant_default="r1",
             capabilities=ModelCapabilities(
                 supports_thinking=True,
                 supports_function_calling=True,
@@ -79,8 +79,8 @@ DEEPSEEK_TENCENT = ModelFamilyConfig(
         ),
         # DeepSeek-R1-0528
         "deepseek-r1-0528": SpecificModelConfig(
-            version="r1-0528",
-            variant="r1-0528",
+            version_default="r1-0528",
+            variant_default="r1-0528",
             capabilities=ModelCapabilities(
                 supports_thinking=True,
                 supports_function_calling=True,
@@ -95,8 +95,8 @@ DEEPSEEK_TENCENT = ModelFamilyConfig(
         ),
         # DeepSeek-V3.1
         "deepseek-v3.1": SpecificModelConfig(
-            version="v3.1",
-            variant="v3.1",
+            version_default="v3.1",
+            variant_default="v3.1",
             capabilities=ModelCapabilities(
                 supports_thinking=True,
                 supports_function_calling=True,
@@ -111,8 +111,8 @@ DEEPSEEK_TENCENT = ModelFamilyConfig(
         ),
         # DeepSeek-V3.1-Terminus
         "deepseek-v3.1-terminus": SpecificModelConfig(
-            version="v3.1-terminus",
-            variant="v3.1-terminus",
+            version_default="v3.1-terminus",
+            variant_default="v3.1-terminus",
             capabilities=ModelCapabilities(
                 supports_thinking=True,
                 supports_function_calling=True,
@@ -127,8 +127,8 @@ DEEPSEEK_TENCENT = ModelFamilyConfig(
         ),
         # DeepSeek-V3.2-Exp
         "deepseek-v3.2-exp": SpecificModelConfig(
-            version="v3.2-exp",
-            variant="v3.2-exp",
+            version_default="v3.2-exp",
+            variant_default="v3.2-exp",
             capabilities=ModelCapabilities(
                 supports_thinking=True,
                 supports_function_calling=True,

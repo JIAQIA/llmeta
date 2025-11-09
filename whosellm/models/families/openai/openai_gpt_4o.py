@@ -37,8 +37,8 @@ GPT_4O = ModelFamilyConfig(
     ),
     specific_models={
         "gpt-4o-audio-preview": SpecificModelConfig(
-            version="4.0",
-            variant="audio-preview",
+            version_default="4.0",
+            variant_default="audio-preview",
             variant_priority=(0,),  # preview 的优先级 / preview priority
             capabilities=ModelCapabilities(
                 supports_vision=True,
@@ -57,8 +57,8 @@ GPT_4O = ModelFamilyConfig(
             ],
         ),
         "gpt-4o-mini": SpecificModelConfig(
-            version="4.0",
-            variant="mini",
+            version_default="4.0",
+            variant_default="mini",
             variant_priority=(0,),  # mini 的优先级 / mini priority
             capabilities=ModelCapabilities(
                 supports_vision=True,
@@ -76,8 +76,8 @@ GPT_4O = ModelFamilyConfig(
             ],
         ),
         "gpt-4o-mini-audio-preview": SpecificModelConfig(
-            version="4.0",
-            variant="mini-audio-preview",
+            version_default="4.0",
+            variant_default="mini-audio-preview",
             variant_priority=(0,),  # mini-preview 的优先级 / mini-preview priority
             capabilities=ModelCapabilities(
                 supports_vision=True,
@@ -96,8 +96,8 @@ GPT_4O = ModelFamilyConfig(
             ],
         ),
         "gpt-4o-mini-realtime-preview": SpecificModelConfig(
-            version="4.0",
-            variant="mini-realtime-preview",
+            version_default="4.0",
+            variant_default="mini-realtime-preview",
             variant_priority=(0,),  # mini-preview 的优先级 / mini-preview priority
             capabilities=ModelCapabilities(
                 supports_vision=True,

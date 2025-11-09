@@ -33,8 +33,8 @@ GPT_3_5 = ModelFamilyConfig(
     ),
     specific_models={
         "gpt-3.5-turbo": SpecificModelConfig(
-            version="3.5",
-            variant="turbo",
+            version_default="3.5",
+            variant_default="turbo",
             variant_priority=(2,),
             capabilities=ModelCapabilities(
                 supports_streaming=False,
@@ -51,8 +51,8 @@ GPT_3_5 = ModelFamilyConfig(
             ],
         ),
         "gpt-3.5-turbo-0125": SpecificModelConfig(
-            version="3.5",
-            variant="turbo",
+            version_default="3.5",
+            variant_default="turbo",
             variant_priority=(2,),
             capabilities=ModelCapabilities(
                 supports_streaming=False,

@@ -29,8 +29,8 @@ O4 = ModelFamilyConfig(
     ),
     specific_models={
         "o4-mini": SpecificModelConfig(
-            version="4.0",
-            variant="mini",
+            version_default="4.0",
+            variant_default="mini",
             variant_priority=(0,),  # mini 的优先级 / mini priority
             capabilities=ModelCapabilities(
                 supports_streaming=True,
@@ -44,8 +44,8 @@ O4 = ModelFamilyConfig(
             ],
         ),
         "o4-mini-deep-research": SpecificModelConfig(
-            version="4.0",
-            variant="mini-deep-research",
+            version_default="4.0",
+            variant_default="mini-deep-research",
             variant_priority=(0,),  # mini-deep-research 的优先级 / mini-deep-research priority
             capabilities=ModelCapabilities(
                 supports_streaming=True,
