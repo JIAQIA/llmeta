@@ -87,7 +87,7 @@ def test_deepseek_reasoner_does_not_use_chat_capabilities() -> None:
     model = LLMeta("deepseek::deepseek-reasoner")
 
     assert model.variant == "reasoner"
-    assert model.capabilities.supports_function_calling is False
+    assert model.capabilities.supports_function_calling is True
     assert model.capabilities.supports_thinking is True
 
 
