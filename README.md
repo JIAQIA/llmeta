@@ -4,17 +4,13 @@
 
 ## 背景 / Background
 
-当前大模型的厂商（provider）/版本(3.5/4.0/4)/型号(flash/mini/o)混乱不堪，不同厂商、不同版本、不同型号其能力又不尽相同。
+今天又是被模型名字支配的一天：同一个模型家族被叫做 `pro`、`plus`、`flash`、`turbo`，还要兼容厂商的“周年纪念版 0111”。想知道它到底能不能看图、能不能撑 200M 的视频，只能狂翻文档。**LLMeta** 就是给这群被命名轰炸的开发者准备的避难所：我们尝试统一这些膨胀的名字、聚合能力信息，让你不必再猜。
 
-比如以智谱AI的GLM-4V来讲，它支持视觉多模态，但其接口中传入的视频有如下要求：
-- GLM-4V-Plus视频大小限制为20M以内，视频时长不超过 30s
-- GLM-4V-Plus-0111视频大小限制为 200M 以内
-- 图片url或者base64编码
-- 图像大小上传限制为每张图像 5M以下，且像素不超过 6000*6000
-- 支持jpg、png、jpeg格式
-- GLM-4V-Flash 不支持base64编码
+- **命名没有规律**：`gpt-4o-mini`、`glm-4v-plus-0111`、`deepseek-chat`… 你永远猜不到下一个名字会长什么样。
+- **能力各说各话**：上下文长度、视觉/音频/视频支持、上传大小限制，分散在不同公告里。
+- **需求只增不减**：业务想快速切换模型，开发者只能手动踩坑。
 
-这些要求非常细碎，开发者将非常难以处理这些"变态"的要求。一个不小心就会触发警告，同时如果开发者有适配多个模型的需求，这些不同厂商API之间的要求将是恶梦。
+我们希望把这些信息塞进同一个入口，一次性告诉你“它是谁、它能做什么、它有哪些限制”。
 
 ## 特性 / Features
 
@@ -35,10 +31,10 @@
 
 ```bash
 # 使用 uv
-uv add llmeta
+uv add whosellm
 
 # 使用 pip
-pip install llmeta
+pip install whosellm
 ```
 
 ## 快速开始 / Quick Start
@@ -46,24 +42,38 @@ pip install llmeta
 ### 基础用法 / Basic Usage
 
 ```python
-from llmeta import LLMeta
+from whosellm import LLMeta
 
 # 初始化模型版本
 model = LLMeta("glm-4v-plus")
 
-# 检查能力
+print(model.provider)                  # Provider.ZHIPU
+print(model.family)                    # ModelFamily.GLM_VISION
 print(model.capabilities.supports_vision)  # True
-print(model.capabilities.supports_video)  # True
 print(model.capabilities.max_video_size_mb)  # 20.0
 
-# 参数验证（可选）
+# 参数验证（当前版本尚未实现）
 validated_params = model.validate_params(your_params)
 ```
+
+### 非法名称也不会炸 / Lenient on Unknown Names
+
+我们不想打断你的流程，即便名称不在我们的数据库里也能返回一个「未知模型占位符」。
+
+```python
+from whosellm import LLMeta, ModelFamily, Provider
+
+mystery = LLMeta("mystery-dragon-9000")
+print(mystery.provider)  # Provider.UNKNOWN
+print(mystery.family)    # ModelFamily.UNKNOWN
+```
+
+你仍然可以继续工作，例如根据 `UNKNOWN` 来触发降级逻辑，或者回头补充配置。
 
 ### 型号优先级比较 / Variant Priority Comparison
 
 ```python
-from llmeta import LLMeta
+from whosellm import LLMeta
 
 # GPT-4 系列型号比较: mini < base < turbo < omni
 gpt4o_mini = LLMeta("gpt-4o-mini")
@@ -84,10 +94,46 @@ print(glm4v_flash < glm4v_plus)  # True
 print(glm4v_plus < glm4v_plus_0111)  # True
 ```
 
+## 自助编写模型配置 / Bring Your Own Config
+
+模型实在太多，我们的默认配置肯定有遗漏。如果 `LLMeta("new-cool-model-pro")` 返回了 `UNKNOWN`，可以像下面这样写一段配置直接扩充注册表：
+
+```python
+from whosellm import LLMeta, ModelFamily, Provider
+from whosellm.capabilities import ModelCapabilities
+from whosellm.models.config import ModelFamilyConfig, SpecificModelConfig
+
+# 动态扩展家族与厂商（DynamicEnumMeta 支持）
+ModelFamily.add_member("MY_LAB", "my-lab")
+Provider.add_member("MY_CORP", "my-corp")
+
+# 注册自己的模型家族
+ModelFamilyConfig(
+    family=ModelFamily.MY_LAB,
+    provider=Provider.MY_CORP,
+    patterns=["my-corp-{version}-{variant}"],
+    version_default="1.0",
+    specific_models={
+        "my-corp-1.0-pro": SpecificModelConfig(
+            version="1.0",
+            variant="pro",
+            capabilities=ModelCapabilities(
+                supports_vision=True,
+                max_video_size_mb=200,
+            ),
+        ),
+    },
+)
+
+print(LLMeta("my-corp-1.0-pro").capabilities.supports_vision)  # True
+```
+
+这样就能即时生效，无需 fork 项目。也欢迎把这段配置通过 PR 分享给我们！
+
 ### 模型家族与Provider / Model Family and Provider
 
 ```python
-from llmeta import LLMeta, ModelFamily, Provider
+from whosellm import LLMeta, ModelFamily, Provider
 
 # 检查模型家族
 gpt4 = LLMeta("gpt-4")
@@ -109,7 +155,7 @@ print(model3.provider)  # Provider.TENCENT
 ### 实际应用场景 / Practical Usage
 
 ```python
-from llmeta import LLMeta
+from whosellm import LLMeta
 
 # 场景1: 选择支持视觉的最便宜模型
 available_models = [
@@ -134,77 +180,20 @@ if new > current:
 
 更多示例请参考 [examples/advanced_usage.py](examples/advanced_usage.py)
 
-## 开发 / Development
+## 提交 Issue / Request Features
 
-本项目使用以下工具：
-- **uv** - 依赖管理
-- **ruff** - 代码格式化和检查
-- **mypy** - 类型检查
-- **bump-my-version** - 版本管理
+如果你遇到未覆盖的模型家族、想要新的能力字段，或发现文档里有你踩过的坑，欢迎在 Issue 里告诉我们。描述清楚模型名称、厂商、期望的能力字段即可，我们会尽量快地补上（或邀请你一起完成）。
 
-### 安装开发依赖 / Install Development Dependencies
+## 贡献指南 / Contribution Guide
 
-```bash
-# 使用 uv 直接安装
-uv sync --extra dev --extra test
+- **准备环境**：`uv sync --extra dev --extra test` 或直接执行 `poe dev`。
+- **格式化代码**：`poe fmt`（等价于 `poe format`）。
+- **代码检查**：提交前执行 `poe lint`，若只想静态检查可使用 `poe check`。
+- **类型检查**：`poe typecheck` 或 `poe mypy` 保证静态类型安全。
+- **测试全家桶**：`poe test` 跑单元 + 集成测试，`poe test-cov` 查看覆盖率，`poe qa` 一条命令跑完所有质量检查。
+- **示例与清理**：`poe example` 运行示例代码，`poe clean` 清理缓存。
 
-# 或使用 poe 命令
-poe dev
-```
-
-### 常用开发命令 / Common Development Commands
-
-#### 代码格式化 / Code Formatting
-```bash
-poe fmt          # 格式化代码 / Format code
-poe format       # 同上 / Same as above
-```
-
-#### 代码检查 / Code Linting
-```bash
-poe lint         # 检查并自动修复 / Check and auto-fix
-poe check        # 仅检查不修复 / Check only without fixing
-```
-
-#### 类型检查 / Type Checking
-```bash
-poe typecheck    # 运行 mypy 类型检查 / Run mypy type checking
-poe mypy         # 同上 / Same as above
-```
-
-#### 测试 / Testing
-```bash
-poe test              # 运行单元测试和集成测试 / Run unit and integration tests
-poe test-unit         # 仅运行单元测试 / Run unit tests only
-poe test-integration  # 仅运行集成测试 / Run integration tests only
-poe test-cov          # 运行测试并生成覆盖率报告 / Run tests with coverage report
-poe test-e2e          # 运行端到端测试 / Run end-to-end tests
-poe test-all          # 运行所有测试 / Run all tests
-```
-
-#### 代码质量全套检查 / Full Quality Assurance
-```bash
-poe qa           # 运行格式化、检查、类型检查和测试 / Run format, lint, typecheck and test
-```
-
-#### 其他命令 / Other Commands
-```bash
-poe example      # 运行示例代码 / Run example code
-poe clean        # 清理所有缓存和构建文件 / Clean all cache and build files
-```
-
-### 版本管理 / Version Management
-
-```bash
-# 升级补丁版本
-bump-my-version bump patch
-
-# 升级次版本
-bump-my-version bump minor
-
-# 升级主版本
-bump-my-version bump major
-```
+版本管理依旧使用 `bump-my-version`：`bump-my-version bump patch|minor|major`。
 
 ## 许可证 / License
 

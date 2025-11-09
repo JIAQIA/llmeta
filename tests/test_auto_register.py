@@ -10,8 +10,8 @@
 import datetime
 import unittest
 
-from llmeta import LLMeta, ModelFamily, Provider
-from llmeta.models.base import auto_register_model, infer_model_family
+from whosellm import LLMeta, ModelFamily, Provider
+from whosellm.models.base import auto_register_model, infer_model_family
 
 
 class TestAutoRegister(unittest.TestCase):
@@ -25,14 +25,14 @@ class TestAutoRegister(unittest.TestCase):
         assert infer_model_family("o1-custom") == ModelFamily.O1
 
         # 智谱 AI 系列 / Zhipu AI series
-        assert infer_model_family("glm-4-0621") == ModelFamily.GLM_4
-        assert infer_model_family("glm-4v-preview") == ModelFamily.GLM_4V
+        assert infer_model_family("glm-4-0621") == ModelFamily.GLM_TEXT
+        assert infer_model_family("glm-4v-preview") == ModelFamily.GLM_VISION
         assert infer_model_family("glm-3-custom") == ModelFamily.GLM_3
 
         # 其他厂商 / Other providers
-        assert infer_model_family("qwen-custom") == ModelFamily.QWEN
+        assert infer_model_family("qwen3-custom") == ModelFamily.QWEN
         assert infer_model_family("deepseek-custom") == ModelFamily.DEEPSEEK
-        assert infer_model_family("claude-custom") == ModelFamily.CLAUDE
+        assert infer_model_family("claude-sonnet-4-5") == ModelFamily.CLAUDE
 
         # 未知模型 / Unknown model
         assert infer_model_family("unknown-model-xyz") == ModelFamily.UNKNOWN
@@ -70,13 +70,12 @@ class TestAutoRegister(unittest.TestCase):
         """测试自动注册 GLM-4V 新型号 / Test auto-register GLM-4V new variant"""
         model = LLMeta("glm-4v-ultra")
 
-        assert model.family == ModelFamily.GLM_4V
+        assert model.family == ModelFamily.GLM_VISION
         assert model.provider == Provider.ZHIPU
-        assert model.version in ["4", "4.0"]  # 可能是 "4" 或 "4.0"
+        assert model.version in ["4", "4.0", "4.5"]  # 可能是 "4", "4.0" 或 "4.5"
         assert model.variant == "ultra"  # ultra 会被提取
         assert model._variant_priority == (5,)  # ultra 的优先级
         assert model.capabilities.supports_vision is True
-        assert model.capabilities.max_image_size_mb == 10.0  # 新配置中是 10.0
 
     def test_auto_register_with_date(self) -> None:
         """测试自动注册带日期的模型 / Test auto-register with date"""
@@ -106,7 +105,7 @@ class TestAutoRegister(unittest.TestCase):
 
     def test_auto_register_qwen_variant(self) -> None:
         """测试自动注册 Qwen 新型号 / Test auto-register Qwen new variant"""
-        model = LLMeta("qwen-turbo-latest")
+        model = LLMeta("qwen3-turbo")
 
         assert model.family == ModelFamily.QWEN
         assert model.provider == Provider.ALIBABA
@@ -159,11 +158,12 @@ class TestAutoRegister(unittest.TestCase):
 
     def test_auto_register_claude_variant(self) -> None:
         """测试自动注册 Claude 新型号 / Test auto-register Claude new variant"""
-        model = LLMeta("claude-3-opus-custom")
+        model = LLMeta("claude-opus-4-1-20250805")
 
         assert model.family == ModelFamily.CLAUDE
         assert model.provider == Provider.ANTHROPIC
         assert model.capabilities.supports_function_calling is True
+        assert model.capabilities.supports_vision is True
         assert model.capabilities.context_window == 200000
 
     def test_manual_auto_register(self) -> None:

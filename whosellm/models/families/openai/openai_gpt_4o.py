@@ -3,10 +3,10 @@
 # @Author  : JQQ
 # @Email   : jiaqia@qknode.com
 # @Software: PyCharm
-from llmeta.capabilities import ModelCapabilities
-from llmeta.models.base import ModelFamily
-from llmeta.models.config import ModelFamilyConfig, SpecificModelConfig
-from llmeta.provider import Provider
+from whosellm.capabilities import ModelCapabilities
+from whosellm.models.base import ModelFamily
+from whosellm.models.config import ModelFamilyConfig, SpecificModelConfig
+from whosellm.provider import Provider
 
 # ============================================================================
 # GPT-4o 系列 / GPT-4o Series
@@ -19,9 +19,9 @@ GPT_4O = ModelFamilyConfig(
     variant_default="omni",
     variant_priority_default=(6,),  # omni 的优先级 / omni priority
     patterns=[
-        "gpt-4o-{variant}-{year:4d}-{month:2d}-{day:2d}",
+        "gpt-4o-{variant:variant}-{year:4d}-{month:2d}-{day:2d}",
         "gpt-4o-{year:4d}-{month:2d}-{day:2d}",  # 日期模式优先
-        "gpt-4o-{variant}",
+        "gpt-4o-{variant:variant}",
         "gpt-4o",
     ],
     capabilities=ModelCapabilities(

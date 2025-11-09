@@ -3,10 +3,10 @@
 # @Author  : JQQ
 # @Email   : jiaqia@qknode.com
 # @Software: PyCharm
-from llmeta.capabilities import ModelCapabilities
-from llmeta.models.base import ModelFamily
-from llmeta.models.config import ModelFamilyConfig, SpecificModelConfig
-from llmeta.provider import Provider
+from whosellm.capabilities import ModelCapabilities
+from whosellm.models.base import ModelFamily
+from whosellm.models.config import ModelFamilyConfig, SpecificModelConfig
+from whosellm.provider import Provider
 
 # ============================================================================
 # O1 系列 / O1 Series
@@ -19,8 +19,8 @@ O1 = ModelFamilyConfig(
     variant_priority_default=(1,),  # base 的优先级 / base priority
     patterns=[
         "o1-{year:4d}-{month:2d}-{day:2d}",
-        "o1-{variant}-{year:4d}-{month:2d}-{day:2d}",
-        "o1-{variant}",
+        "o1-{variant:variant}-{year:4d}-{month:2d}-{day:2d}",
+        "o1-{variant:variant}",
         "o1",
     ],
     capabilities=ModelCapabilities(

@@ -9,7 +9,7 @@
 
 import unittest
 
-from llmeta.provider import Provider
+from whosellm.provider import Provider
 
 
 class TestProvider(unittest.TestCase):
@@ -24,8 +24,8 @@ class TestProvider(unittest.TestCase):
 
     def test_from_model_name_anthropic(self) -> None:
         """测试 Anthropic 模型识别 / Test Anthropic model recognition"""
-        assert Provider.from_model_name("claude-3") == Provider.ANTHROPIC
-        assert Provider.from_model_name("claude-2") == Provider.ANTHROPIC
+        assert Provider.from_model_name("claude-sonnet-4-5") == Provider.ANTHROPIC
+        assert Provider.from_model_name("claude-opus-4-1") == Provider.ANTHROPIC
 
     def test_from_model_name_zhipu(self) -> None:
         """测试智谱 AI 模型识别 / Test Zhipu AI model recognition"""
@@ -35,8 +35,8 @@ class TestProvider(unittest.TestCase):
 
     def test_from_model_name_alibaba(self) -> None:
         """测试阿里云模型识别 / Test Alibaba model recognition"""
-        assert Provider.from_model_name("qwen-turbo") == Provider.ALIBABA
-        assert Provider.from_model_name("tongyi") == Provider.ALIBABA
+        assert Provider.from_model_name("qwen3-turbo") == Provider.ALIBABA
+        assert Provider.from_model_name("qwen3-turbo-2025-09-23") == Provider.ALIBABA
 
     def test_from_model_name_baidu(self) -> None:
         """测试百度模型识别 / Test Baidu model recognition"""

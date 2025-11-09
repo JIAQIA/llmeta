@@ -8,12 +8,12 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from llmeta import LLMeta
-from llmeta.models.base import ModelFamily, infer_variant_priority
-from llmeta.models.registry import get_family_config
+from whosellm import LLMeta
+from whosellm.models.base import ModelFamily, infer_variant_priority
+from whosellm.models.registry import get_family_config
 
 if TYPE_CHECKING:
-    from llmeta.models.config import ModelFamilyConfig
+    from whosellm.models.config import ModelFamilyConfig
 
 MODEL_VARIANT_SAMPLES: dict[ModelFamily, dict[str, list[str]]] = {
     ModelFamily.GPT_4O: {
@@ -85,17 +85,20 @@ MODEL_VARIANT_SAMPLES: dict[ModelFamily, dict[str, list[str]]] = {
         "omni": ["o4-omni"],
         "deep-research": ["o4-deep-research"],
     },
-    ModelFamily.GLM_4V: {
+    ModelFamily.GLM_VISION: {
         "vision-flash": ["glm-4v-flash"],
         "preview": ["glm-4v-preview"],
-        "base": ["glm-4v"],
+        "base": ["glm-4v", "glm-4.5v"],
         "vision-plus": ["glm-4v-plus", "glm-4v-plus-0111"],
     },
-    ModelFamily.GLM_4: {
+    ModelFamily.GLM_TEXT: {
         "mini": ["glm-4-mini"],
-        "flash": ["glm-4-flash"],
+        "flash": ["glm-4-flash", "glm-4.5-flash"],
         "preview": ["glm-4-preview"],
-        "base": ["glm-4"],
+        "air": ["glm-4.5-air"],
+        "airx": ["glm-4.5-airx"],
+        "base": ["glm-4", "glm-4.5", "glm-4.6"],
+        "x": ["glm-4.5-x"],
         "turbo": ["glm-4-turbo"],
         "plus": ["glm-4-plus"],
         "pro": ["glm-4-pro"],
@@ -110,26 +113,33 @@ MODEL_VARIANT_SAMPLES: dict[ModelFamily, dict[str, list[str]]] = {
         "pro": ["glm-3-pro"],
     },
     ModelFamily.QWEN: {
-        "mini": ["qwen-mini"],
-        "flash": ["qwen-flash"],
-        "preview": ["qwen-preview"],
-        "base": ["qwen"],
-        "turbo": ["qwen-turbo"],
-        "plus": ["qwen-plus"],
-        "pro": ["qwen-pro"],
-        "ultra": ["qwen-ultra"],
-        "omni": ["qwen-omni"],
+        "mini": ["qwen3-mini"],
+        "flash": ["qwen3-flash"],
+        "preview": ["qwen3-preview"],
+        "base": ["qwen3-base"],
+        "turbo": ["qwen3-turbo"],
+        "plus": ["qwen3-plus"],
+        "pro": ["qwen3-pro"],
+        "ultra": ["qwen3-ultra"],
+        "omni": ["qwen3-omni"],
     },
     ModelFamily.CLAUDE: {
-        "mini": ["claude-3-mini"],
-        "flash": ["claude-3-flash"],
-        "preview": ["claude-3-preview"],
-        "base": ["claude"],
-        "turbo": ["claude-3-turbo"],
-        "plus": ["claude-3-plus"],
-        "pro": ["claude-3-pro"],
-        "opus": ["claude-3-opus"],
-        "ultra": ["claude-3-ultra"],
+        "sonnet": [
+            "claude-sonnet-4-5",
+            "claude-sonnet-4-5-20250929",
+            "claude-sonnet-4-5@20250929",
+            "claude-3-7-sonnet-latest",
+        ],
+        "opus": [
+            "claude-opus-4-1",
+            "claude-opus-4-1-20250805",
+            "claude-opus-4-1@20250805",
+        ],
+        "haiku": [
+            "claude-haiku-4-5",
+            "claude-haiku-4-5-20251001",
+            "claude-haiku-4-5@20251001",
+        ],
     },
     ModelFamily.ERNIE: {
         "mini": ["ernie-mini"],
@@ -206,6 +216,18 @@ def _resolve_expected_priority(
     if spec_config and spec_config.variant_priority is not None:
         return spec_config.variant_priority
 
+    # 尝试使用 specific_models 的子模式匹配样例名称，以获取显式 variant_priority
+    import parse  # type: ignore[import-untyped]
+
+    for config in family_config.specific_models.values():
+        if not config.patterns or config.variant_priority is None:
+            continue
+
+        for sub_pattern in config.patterns:
+            result = parse.parse(sub_pattern, sample_lower)
+            if result is not None:
+                return config.variant_priority
+
     if model_variant == family_config.variant_default and family_config.variant_priority_default is not None:
         return family_config.variant_priority_default
 
@@ -217,7 +239,7 @@ def test_variant_priority_alignment(family: ModelFamily, variant: str, sample_na
     model = LLMeta(sample_name)
 
     assert model.family == family, f"'{sample_name}' 应该解析为家族 '{family.value}'，实际为 '{model.family.value}'"
-    assert model.variant == variant, f"'{sample_name}' 解析出的型号应为 '{variant}'，实际为 '{model.variant}'"
+    assert model.variant == variant, f"'{sample_name}' 解析出的型号应为 '{variant:variant}'，实际为 '{model.variant}'"
 
     family_config = get_family_config(family)
     assert family_config is not None, f"家族 '{family.value}' 没有注册配置"

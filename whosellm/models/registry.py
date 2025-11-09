@@ -13,12 +13,13 @@ Provides registration and query interfaces for model family configurations
 
 from typing import TYPE_CHECKING, Any
 
-from llmeta.capabilities import ModelCapabilities
-from llmeta.models.base import MODEL_REGISTRY, ModelFamily, ModelInfo, register_model
-from llmeta.provider import Provider
+from whosellm.capabilities import ModelCapabilities
+from whosellm.models.base import MODEL_REGISTRY, ModelFamily, ModelInfo, register_model
+from whosellm.models.patterns import parse_pattern
+from whosellm.provider import Provider
 
 if TYPE_CHECKING:
-    from llmeta.models.config import ModelFamilyConfig
+    from whosellm.models.config import ModelFamilyConfig
 
 # 核心注册表：所有模型家族配置 / Core registry: all model family configs
 _FAMILY_CONFIGS: dict[ModelFamily, "ModelFamilyConfig"] = {}
@@ -110,8 +111,6 @@ def match_model_pattern(model_name: str) -> dict[str, Any] | None:
     Returns:
         dict | None: 匹配结果或None / Match result or None
     """
-    import parse  # type: ignore[import-untyped]
-
     model_lower = model_name.lower()
     matched: dict[str, Any]
 
@@ -138,7 +137,7 @@ def match_model_pattern(model_name: str) -> dict[str, Any] | None:
                 continue
 
             for pattern in spec_config.patterns:
-                result = parse.parse(pattern, model_lower)
+                result = parse_pattern(pattern, model_lower)
                 if result:
                     # 转换为字典并添加默认值 / Convert to dict and add defaults
                     matched = dict(result.named)
@@ -157,7 +156,7 @@ def match_model_pattern(model_name: str) -> dict[str, Any] | None:
     # [Lowest Priority] Iterate all parent patterns in family configs
     for config in _FAMILY_CONFIGS.values():
         for pattern in config.patterns:
-            result = parse.parse(pattern, model_lower)
+            result = parse_pattern(pattern, model_lower)
             if result:
                 # 转换为字典并添加默认值 / Convert to dict and add defaults
                 matched = dict(result.named)
@@ -234,7 +233,7 @@ def get_specific_model_config(model_name: str) -> tuple[str, str, ModelCapabilit
     Returns:
         tuple | None: (version, variant, capabilities) 或 None
     """
-    import parse
+    import parse  # type: ignore[import-untyped]
 
     model_lower = model_name.lower()
 
@@ -269,15 +268,15 @@ def register_family(config: "ModelFamilyConfig") -> None:
         config: 模型家族配置 / Model family configuration
 
     Example:
-        >>> from llmeta.models.config import ModelFamilyConfig
-        >>> from llmeta.models.registry import register_family
-        >>> from llmeta.capabilities import ModelCapabilities
+        >>> from whosellm.models.config import ModelFamilyConfig
+        >>> from whosellm.models.registry import register_family
+        >>> from whosellm.capabilities import ModelCapabilities
         >>>
         >>> # 创建新的模型家族配置 / Create new model family configuration
         >>> gemini_config = ModelFamilyConfig(
         ...     family=ModelFamily.GEMINI,
         ...     provider=Provider.GOOGLE,
-        ...     patterns=["gemini-{variant}"],
+        ...     patterns=["gemini-{variant:variant}"],
         ...     capabilities=ModelCapabilities(supports_vision=True),
         ... )
         >>>

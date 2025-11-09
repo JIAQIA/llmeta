@@ -3,10 +3,10 @@
 # @Author  : JQQ
 # @Email   : jiaqia@qknode.com
 # @Software: PyCharm
-from llmeta.capabilities import ModelCapabilities
-from llmeta.models.base import ModelFamily
-from llmeta.models.config import ModelFamilyConfig, SpecificModelConfig
-from llmeta.provider import Provider
+from whosellm.capabilities import ModelCapabilities
+from whosellm.models.base import ModelFamily
+from whosellm.models.config import ModelFamilyConfig, SpecificModelConfig
+from whosellm.provider import Provider
 
 # ============================================================================
 # O3 系列 / O3 Series
@@ -19,8 +19,8 @@ O3 = ModelFamilyConfig(
     version_default="3.0",
     variant_priority_default=(1,),  # base 的优先级 / base priority
     patterns=[
-        "o3-{variant}-{year:4d}-{month:2d}-{day:2d}",
-        "o3-{variant}",
+        "o3-{variant:variant}-{year:4d}-{month:2d}-{day:2d}",
+        "o3-{variant:variant}",
         "o3-{year:4d}-{month:2d}-{day:2d}",
         "o3",
     ],

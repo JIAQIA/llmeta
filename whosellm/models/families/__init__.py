@@ -12,11 +12,12 @@ Import all provider configuration files to trigger auto-registration
 
 # 导入所有提供商的配置，触发自动注册
 # Import all provider configurations to trigger auto-registration
-from llmeta.models.families import (
+from whosellm.models.families import (
     alibaba,
     anthropic,
     openai,
     others,
+    vidu,
     zhipu,
 )
 
@@ -25,5 +26,6 @@ __all__ = [
     "anthropic",
     "openai",
     "others",
+    "vidu",
     "zhipu",
 ]
