@@ -41,8 +41,8 @@ GPT_4_1 = ModelFamilyConfig(
     ),
     specific_models={
         "gpt-4.1-mini": SpecificModelConfig(
-            version="4.1",
-            variant="mini",
+            version_default="4.1",
+            variant_default="mini",
             variant_priority=(0,),
             capabilities=ModelCapabilities(
                 supports_function_calling=True,
@@ -61,8 +61,8 @@ GPT_4_1 = ModelFamilyConfig(
             ],
         ),
         "gpt-4.1-nano": SpecificModelConfig(
-            version="4.1",
-            variant="nano",
+            version_default="4.1",
+            variant_default="nano",
             variant_priority=(0,),  # nano 的优先级 (< mini) / nano priority
             capabilities=ModelCapabilities(
                 supports_function_calling=True,

@@ -32,8 +32,8 @@ O3 = ModelFamilyConfig(
     ),
     specific_models={
         "o3": SpecificModelConfig(
-            version="3.0",
-            variant="base",
+            version_default="3.0",
+            variant_default="base",
             variant_priority=(1,),  # base 的优先级 / base priority
             capabilities=ModelCapabilities(
                 supports_streaming=True,
@@ -47,8 +47,8 @@ O3 = ModelFamilyConfig(
             ],
         ),
         "o3-mini": SpecificModelConfig(
-            version="3.0",
-            variant="mini",
+            version_default="3.0",
+            variant_default="mini",
             variant_priority=(0,),  # mini 的优先级 / mini priority
             capabilities=ModelCapabilities(
                 supports_streaming=True,
@@ -62,8 +62,8 @@ O3 = ModelFamilyConfig(
             ],
         ),
         "o3-pro": SpecificModelConfig(
-            version="3.0",
-            variant="pro",
+            version_default="3.0",
+            variant_default="pro",
             variant_priority=(4,),  # pro 的优先级 / pro priority
             capabilities=ModelCapabilities(
                 supports_streaming=False,
@@ -77,8 +77,8 @@ O3 = ModelFamilyConfig(
             ],
         ),
         "o3-deep-research": SpecificModelConfig(
-            version="3.0",
-            variant="deep-research",
+            version_default="3.0",
+            variant_default="deep-research",
             variant_priority=(1,),  # deep-research 的优先级 / deep-research priority
             capabilities=ModelCapabilities(
                 supports_streaming=True,

@@ -34,8 +34,8 @@ O1 = ModelFamilyConfig(
     ),
     specific_models={
         "o1-pro": SpecificModelConfig(
-            version="1.0",
-            variant="pro",
+            version_default="1.0",
+            variant_default="pro",
             variant_priority=(4,),  # pro 的优先级 / pro priority
             capabilities=ModelCapabilities(
                 supports_thinking=True,
